@@ -9,14 +9,10 @@
 
 ---
 
-## 🎬 Video Demo & Preview
-
-https://github.com/user-attachments/assets/2026-09-27%2002-31-40.mp4
+## 🎬 Live Demo
 
 <p align="center">
-  <video src="assets/2026-09-27%2002-31-40.mp4" controls="controls" autoplay loop muted style="max-width: 100%; border-radius: 12px; box-shadow: 0 16px 40px rgba(0,0,0,0.5);">
-    <a href="assets/2026-09-27%2002-31-40.mp4">▶️ Watch Demo Video</a>
-  </video>
+  <img src="assets/demo.gif" alt="NeonLyrics Live Demo" width="850" style="border-radius: 12px; box-shadow: 0 16px 40px rgba(0,0,0,0.6);">
 </p>
 
 ---
