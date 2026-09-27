@@ -1,0 +1,5 @@
+node_modules/
+lyrics_cache/
+*.log
+.vscode/
+dist/

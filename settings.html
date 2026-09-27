@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>NeonLyrics Studio & Settings</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      user-select: none;
+    }
+
+    body {
+      background: #0f1322;
+      color: #fff;
+      font-family: 'Outfit', 'Inter', system-ui, sans-serif;
+      padding: 24px;
+      height: 100vh;
+      overflow-y: auto;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .title {
+      font-size: 20px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-title {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: rgba(255, 255, 255, 0.6);
+      margin-bottom: 12px;
+      margin-top: 18px;
+    }
+    .section-title:first-of-type {
+      margin-top: 0;
+    }
+
+    .palette-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .palette-btn {
+      height: 42px;
+      border: 2px solid transparent;
+      border-radius: 10px;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      transition: all 0.15s ease;
+    }
+    .palette-btn:hover {
+      transform: translateY(-2px);
+      border-color: #fff;
+    }
+    .palette-btn.active {
+      border-color: #fff;
+      box-shadow: 0 0 14px rgba(255, 255, 255, 0.7);
+    }
+
+    .color-pickers-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .picker-item {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .picker-item label {
+      font-size: 11px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.8);
+    }
+    .picker-item input[type="color"] {
+      width: 100%;
+      height: 38px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      background: transparent;
+      cursor: pointer;
+    }
+
+    .settings-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .slider-row {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.04);
+      padding: 12px 16px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .slider-label-wrap {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .slider-row input[type="range"] {
+      accent-color: #00f2fe;
+      cursor: pointer;
+    }
+
+    .switch-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 16px;
+      background: rgba(255, 255, 255, 0.04);
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .switch-row input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      accent-color: #00f2fe;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="title">
+      <span>🎨 NeonLyrics Customization Studio</span>
+    </div>
+  </div>
+
+  <div class="section-title">Color Themes</div>
+  <div class="palette-grid">
+    <button class="palette-btn" data-theme="theme-cyber" style="background: linear-gradient(135deg, #00f2fe, #4facfe);">Cyber Aqua</button>
+    <button class="palette-btn" data-theme="theme-neon-pink" style="background: linear-gradient(135deg, #ff007f, #a855f7);">Neon Pink</button>
+    <button class="palette-btn" data-theme="theme-aurora-green" style="background: linear-gradient(135deg, #00ff87, #60efff);">Aurora Mint</button>
+    <button class="palette-btn" data-theme="theme-sunset-amber" style="background: linear-gradient(135deg, #ff9900, #ff0055);">Sunset Amber</button>
+    <button class="palette-btn" data-theme="theme-diamond-white" style="background: linear-gradient(135deg, #ffffff, #94a3b8); color: #000;">Diamond White</button>
+    <button class="palette-btn" data-theme="theme-electric-purple" style="background: linear-gradient(135deg, #8b5cf6, #3b82f6);">Electric Purple</button>
+    <button class="palette-btn" data-theme="theme-cyber-volt" style="background: linear-gradient(135deg, #eab308, #f97316);">Cyber Volt</button>
+    <button class="palette-btn" data-theme="theme-crimson-red" style="background: linear-gradient(135deg, #ef4444, #991b1b);">Crimson Red</button>
+  </div>
+
+  <div class="section-title">Custom Color Mixers</div>
+  <div class="color-pickers-row">
+    <div class="picker-item">
+      <label>Primary Glow</label>
+      <input type="color" id="picker-primary" value="#00f2fe">
+    </div>
+    <div class="picker-item">
+      <label>Secondary Aura</label>
+      <input type="color" id="picker-secondary" value="#4facfe">
+    </div>
+    <div class="picker-item">
+      <label>Active Word</label>
+      <input type="color" id="picker-active-word" value="#ffffff">
+    </div>
+    <div class="picker-item">
+      <label>Sung Words</label>
+      <input type="color" id="picker-sung-word" value="#ffffff">
+    </div>
+  </div>
+
+  <div class="section-title">Text Scaling & Glow</div>
+  <div class="settings-group">
+    <div class="slider-row">
+      <div class="slider-label-wrap">
+        <span>Font Size Scaling</span>
+        <span id="font-val">100%</span>
+      </div>
+      <input type="range" id="slider-font" min="70" max="180" value="100">
+    </div>
+
+    <div class="slider-row">
+      <div class="slider-label-wrap">
+        <span>Glow Intensity</span>
+        <span id="glow-val">100%</span>
+      </div>
+      <input type="range" id="slider-glow" min="20" max="180" value="100">
+    </div>
+
+    <div class="switch-row">
+      <span>Always On Top (Stay above apps)</span>
+      <input type="checkbox" id="chk-always-on-top">
+    </div>
+
+    <div class="switch-row">
+      <span>Run on Windows Startup</span>
+      <input type="checkbox" id="chk-startup" checked>
+    </div>
+  </div>
+
+  <script>
+    const { ipcRenderer } = require('electron');
+
+    let config = {
+      theme: 'theme-cyber',
+      isCustomColor: false,
+      primaryColor: '#00f2fe',
+      secondaryColor: '#4facfe',
+      activeWordColor: '#ffffff',
+      sungWordColor: '#ffffff',
+      glowIntensity: 1.0,
+      fontScale: 1.0,
+      alwaysOnTop: false,
+      autoStart: true
+    };
+
+    function loadSettings() {
+      try {
+        const saved = localStorage.getItem('neon_lyrics_config');
+        if (saved) config = { ...config, ...JSON.parse(saved) };
+      } catch (e) {}
+      applyUI();
+    }
+
+    function saveSettings() {
+      try {
+        localStorage.setItem('neon_lyrics_config', JSON.stringify(config));
+        ipcRenderer.send('config-updated', config);
+      } catch (e) {}
+    }
+
+    function applyUI() {
+      document.querySelectorAll('.palette-btn').forEach(b => {
+        b.classList.toggle('active', !config.isCustomColor && b.dataset.theme === config.theme);
+      });
+      document.getElementById('picker-primary').value = config.primaryColor;
+      document.getElementById('picker-secondary').value = config.secondaryColor;
+      document.getElementById('picker-active-word').value = config.activeWordColor;
+      document.getElementById('picker-sung-word').value = config.sungWordColor;
+
+      document.getElementById('slider-font').value = Math.round(config.fontScale * 100);
+      document.getElementById('font-val').textContent = `${Math.round(config.fontScale * 100)}%`;
+
+      document.getElementById('slider-glow').value = Math.round(config.glowIntensity * 100);
+      document.getElementById('glow-val').textContent = `${Math.round(config.glowIntensity * 100)}%`;
+
+      document.getElementById('chk-always-on-top').checked = config.alwaysOnTop;
+      document.getElementById('chk-startup').checked = config.autoStart;
+    }
+
+    document.querySelectorAll('.palette-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        config.isCustomColor = false;
+        config.theme = btn.dataset.theme;
+        applyUI();
+        saveSettings();
+      });
+    });
+
+    ['picker-primary', 'picker-secondary', 'picker-active-word', 'picker-sung-word'].forEach(id => {
+      document.getElementById(id).addEventListener('input', () => {
+        config.isCustomColor = true;
+        config.primaryColor = document.getElementById('picker-primary').value;
+        config.secondaryColor = document.getElementById('picker-secondary').value;
+        config.activeWordColor = document.getElementById('picker-active-word').value;
+        config.sungWordColor = document.getElementById('picker-sung-word').value;
+        applyUI();
+        saveSettings();
+      });
+    });
+
+    document.getElementById('slider-font').addEventListener('input', (e) => {
+      config.fontScale = parseFloat(e.target.value) / 100;
+      document.getElementById('font-val').textContent = `${e.target.value}%`;
+      saveSettings();
+    });
+
+    document.getElementById('slider-glow').addEventListener('input', (e) => {
+      config.glowIntensity = parseFloat(e.target.value) / 100;
+      document.getElementById('glow-val').textContent = `${e.target.value}%`;
+      saveSettings();
+    });
+
+    document.getElementById('chk-always-on-top').addEventListener('change', (e) => {
+      config.alwaysOnTop = e.target.checked;
+      ipcRenderer.send('toggle-always-on-top', config.alwaysOnTop);
+      saveSettings();
+    });
+
+    document.getElementById('chk-startup').addEventListener('change', (e) => {
+      config.autoStart = e.target.checked;
+      ipcRenderer.send('toggle-startup', config.autoStart);
+      saveSettings();
+    });
+
+    loadSettings();
+  </script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+{
+  "name": "neon-lyrics-app",
+  "version": "2.0.0",
+  "description": "Transparent & Blurred Floating Karaoke Lyrics Overlay for Windows",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "devDependencies": {
+    "electron": "^33.4.11"
+  }
+}
