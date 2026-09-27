@@ -9,6 +9,14 @@
 
 ---
 
+## 🎬 Demo & Preview
+
+<p align="center">
+  <img src="assets/preview.png" alt="NeonLyrics Preview" width="850">
+</p>
+
+---
+
 ## 🌟 Features
 
 - **👻 Zero-Chrome Floating Lyrics**: Frameless and 100% transparent — only the glowing lyrics float directly above your wallpaper and open apps.
