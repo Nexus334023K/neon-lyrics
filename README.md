@@ -9,14 +9,6 @@
 
 ---
 
-## 🎬 Live Demo
-
-<p align="center">
-  <img src="assets/demo.gif" alt="NeonLyrics Live Demo" width="850" style="border-radius: 12px; box-shadow: 0 16px 40px rgba(0,0,0,0.6);">
-</p>
-
----
-
 ## 🌟 Features
 
 - **👻 Zero-Chrome Floating Lyrics**: Frameless and 100% transparent — only the glowing lyrics float directly above your wallpaper and open apps.
