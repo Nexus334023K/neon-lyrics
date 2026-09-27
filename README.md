@@ -9,6 +9,16 @@
 
 ---
 
+<p align="center">
+  <a href="https://www.youtube.com/watch?v=MGOycckngbM" target="_blank">
+    <img src="https://img.youtube.com/vi/MGOycckngbM/maxresdefault.jpg" alt="NeonLyrics Demo on YouTube" width="850" style="border-radius: 12px; box-shadow: 0 16px 40px rgba(0,0,0,0.6);">
+  </a>
+  <br>
+  <a href="https://www.youtube.com/watch?v=MGOycckngbM">▶️ <b>Watch the Full Demo on YouTube</b></a>
+</p>
+
+---
+
 ## 🌟 Features
 
 - **👻 Zero-Chrome Floating Lyrics**: Frameless and 100% transparent — only the glowing lyrics float directly above your wallpaper and open apps.
