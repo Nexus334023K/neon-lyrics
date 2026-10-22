@@ -14,8 +14,13 @@ import urllib.parse
 import datetime
 
 # LRCLIB & Lyrics Parser
-CACHE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "lyrics_cache")
-os.makedirs(CACHE_DIR, exist_ok=True)
+app_data = os.environ.get('APPDATA') or os.path.expanduser('~')
+CACHE_DIR = os.path.join(app_data, "NeonLyrics", "lyrics_cache")
+try:
+    os.makedirs(CACHE_DIR, exist_ok=True)
+except Exception:
+    CACHE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "lyrics_cache")
+    os.makedirs(CACHE_DIR, exist_ok=True)
 failed_cache = set()
 
 def sanitize(text):

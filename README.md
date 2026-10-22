@@ -34,12 +34,35 @@
 
 ---
 
-## 📦 Requirements
+## 💾 Download Installer (.exe)
+
+You can install NeonLyrics directly without needing to configure Node.js or Python manually!
+Grab the installer executable generated in `release/`:
+- **`release/NeonLyrics Setup 2.0.0.exe`**
+
+Double-click to install. It will:
+- Install NeonLyrics to Windows
+- Add Desktop and Start Menu shortcuts
+- Bundle the standalone media backend so it works out of the box on any PC
+
+---
+
+## 🛠️ Building the Installer from Source
+
+If you want to package the setup installer yourself:
+```bash
+npm run build
+```
+*(This bundles the Python worker into a standalone binary using PyInstaller, then compiles the NSIS installer via electron-builder into `release/`)*
+
+---
+
+## 📦 Requirements (For Development Only)
 
 1. **Node.js** (v18 or higher)
-2. **Python** (v3.10 or higher) with `winsdk`:
+2. **Python** (v3.10 or higher) with `winsdk` and `pyinstaller`:
    ```powershell
-   pip install winsdk
+   pip install winsdk pyinstaller
    ```
 3. **Spotify Desktop** or any Windows Media Session supported player.
 

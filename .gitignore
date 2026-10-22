@@ -3,3 +3,7 @@ lyrics_cache/
 *.log
 .vscode/
 dist/
+py_dist/
+py_build/
+release/
+*.spec

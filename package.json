@@ -1,12 +1,61 @@
 {
   "name": "neon-lyrics-app",
+  "productName": "NeonLyrics",
   "version": "2.0.0",
   "description": "Transparent & Blurred Floating Karaoke Lyrics Overlay for Windows",
+  "author": "Nexus",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "build:py": "python -m PyInstaller --noconfirm --onedir --collect-all winsdk --distpath py_dist --workpath py_build media_worker.py",
+    "dist": "electron-builder --win nsis",
+    "build": "npm run build:py && npm run dist"
   },
   "devDependencies": {
-    "electron": "^33.4.11"
+    "electron": "^33.4.11",
+    "electron-builder": "^26.15.3"
+  },
+  "build": {
+    "appId": "com.nexus.neonlyrics",
+    "productName": "NeonLyrics",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "main.js",
+      "renderer.js",
+      "index.html",
+      "settings.html",
+      "styles.css",
+      "build/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "py_dist/media_worker",
+        "to": "bin/media_worker",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "NeonLyrics",
+      "runAfterFinish": true
+    }
   }
 }

@@ -1,7 +1,14 @@
 const { app, BrowserWindow, ipcMain, screen, Tray, Menu, nativeImage } = require('electron');
 const path = require('path');
+const fs = require('fs');
 const { spawn } = require('child_process');
 const readline = require('readline');
+
+// Ensure single instance
+const gotTheLock = app.requestSingleInstanceLock();
+if (!gotTheLock) {
+  app.quit();
+}
 
 // Enable transparent visuals
 app.commandLine.appendSwitch('enable-transparent-visuals');
@@ -181,10 +188,30 @@ function applyThemePreset(themeName) {
   }
 }
 
+function getWorkerCommand() {
+  // 1. In packaged app: resources/bin/media_worker/media_worker.exe
+  if (process.resourcesPath) {
+    const packagedExe = path.join(process.resourcesPath, 'bin', 'media_worker', 'media_worker.exe');
+    if (fs.existsSync(packagedExe)) {
+      return { cmd: packagedExe, args: [] };
+    }
+  }
+
+  // 2. In local dev with compiled binary: py_dist/media_worker/media_worker.exe
+  const localExe = path.join(__dirname, 'py_dist', 'media_worker', 'media_worker.exe');
+  if (fs.existsSync(localExe)) {
+    return { cmd: localExe, args: [] };
+  }
+
+  // 3. Fallback to python script
+  return { cmd: 'python', args: ['-u', path.join(__dirname, 'media_worker.py')] };
+}
+
 function startMediaWorker() {
-  const workerScript = path.join(__dirname, 'media_worker.py');
-  pythonWorker = spawn('python', ['-u', workerScript], {
-    stdio: ['ignore', 'pipe', 'pipe']
+  const worker = getWorkerCommand();
+  pythonWorker = spawn(worker.cmd, worker.args, {
+    stdio: ['ignore', 'pipe', 'pipe'],
+    windowsHide: true
   });
 
   const rl = readline.createInterface({
