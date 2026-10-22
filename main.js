@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, screen, Tray, Menu, nativeImage } = require('electron');
+const { app, BrowserWindow, ipcMain, screen, Tray, Menu, nativeImage, globalShortcut } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const { spawn } = require('child_process');
@@ -18,6 +18,7 @@ let settingsWindow = null;
 let pythonWorker = null;
 let tray = null;
 let isAlwaysOnTop = false; // Default: Desktop layer (behind active apps)
+let isClickThrough = false; // Ghost mode (pass clicks through)
 
 const TRAY_ICON_DATA_URL = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAZElEQVQ4T2NkoBAwUqifYdQADg9YWFhOMTIyHmXEp/AUE8Ofv3/+/e/s7PRB4XNycnrm5ub+AOMj6yck/v79+w8UHgR0dnZ+wGeA0QAYDeiGgX9/gQ5+8fPnTyOGUQMAABx2F32wD5v6AAAAAElFTkSuQmCC';
 
@@ -26,7 +27,7 @@ function createOverlayWindow() {
   const { width: screenWidth, height: screenHeight } = primaryDisplay.workAreaSize;
 
   const winWidth = 1100;
-  const winHeight = 180;
+  const winHeight = 240;
   const posX = Math.round((screenWidth - winWidth) / 2);
   const posY = Math.round(screenHeight - winHeight - 60);
 
@@ -49,6 +50,10 @@ function createOverlayWindow() {
     }
   });
 
+  if (isClickThrough) {
+    overlayWindow.setIgnoreMouseEvents(true, { forward: true });
+  }
+
   overlayWindow.loadFile(path.join(__dirname, 'index.html'));
 
   overlayWindow.on('closed', () => {
@@ -65,12 +70,12 @@ function openSettingsWindow() {
   }
 
   settingsWindow = new BrowserWindow({
-    width: 560,
-    height: 640,
+    width: 620,
+    height: 720,
     center: true,
     frame: true,
     autoHideMenuBar: true,
-    resizable: false,
+    resizable: true,
     title: 'NeonLyrics - Customization Studio',
     webPreferences: {
       nodeIntegration: true,
@@ -85,11 +90,29 @@ function openSettingsWindow() {
   });
 }
 
+function setClickThrough(enabled) {
+  isClickThrough = Boolean(enabled);
+  if (overlayWindow && !overlayWindow.isDestroyed()) {
+    overlayWindow.setIgnoreMouseEvents(isClickThrough, { forward: true });
+    overlayWindow.webContents.send('apply-config', { isClickThrough });
+  }
+  if (settingsWindow && !settingsWindow.isDestroyed()) {
+    settingsWindow.webContents.send('click-through-toggled', isClickThrough);
+  }
+  updateTrayMenu();
+}
+
 function createTray() {
   if (tray) return;
 
   try {
-    const img = nativeImage.createFromDataURL(TRAY_ICON_DATA_URL);
+    const iconPath = path.join(__dirname, 'build', 'icon.ico');
+    let img;
+    if (fs.existsSync(iconPath)) {
+      img = nativeImage.createFromPath(iconPath);
+    } else {
+      img = nativeImage.createFromDataURL(TRAY_ICON_DATA_URL);
+    }
     tray = new Tray(img);
     tray.setToolTip('NeonLyrics (Right-click for settings)');
 
@@ -146,6 +169,14 @@ function updateTrayMenu() {
       }
     },
     {
+      label: 'Ghost Mode (Click-Through)  [Ctrl+Alt+O]',
+      type: 'checkbox',
+      checked: isClickThrough,
+      click: (item) => {
+        setClickThrough(item.checked);
+      }
+    },
+    {
       label: 'Run on Windows Startup',
       type: 'checkbox',
       checked: isAutoStart,
@@ -158,7 +189,7 @@ function updateTrayMenu() {
       }
     },
     {
-      label: 'Show / Hide Floating Lyrics',
+      label: 'Show / Hide Floating Lyrics  [Ctrl+Alt+L]',
       click: () => {
         if (overlayWindow) {
           if (overlayWindow.isVisible()) overlayWindow.hide();
@@ -210,7 +241,7 @@ function getWorkerCommand() {
 function startMediaWorker() {
   const worker = getWorkerCommand();
   pythonWorker = spawn(worker.cmd, worker.args, {
-    stdio: ['ignore', 'pipe', 'pipe'],
+    stdio: ['pipe', 'pipe', 'pipe'],
     windowsHide: true
   });
 
@@ -243,10 +274,22 @@ function stopMediaWorker() {
   }
 }
 
-// IPC from Settings
+// IPC from Settings & Overlay
 ipcMain.on('config-updated', (event, newConfig) => {
   if (overlayWindow && !overlayWindow.isDestroyed()) {
     overlayWindow.webContents.send('apply-config', newConfig);
+  }
+});
+
+ipcMain.on('toggle-click-through', (event, val) => {
+  setClickThrough(val);
+});
+
+ipcMain.on('media-control', (event, data) => {
+  if (pythonWorker && pythonWorker.stdin && !pythonWorker.stdin.destroyed) {
+    try {
+      pythonWorker.stdin.write(JSON.stringify(data) + '\n');
+    } catch (e) {}
   }
 });
 
@@ -271,12 +314,35 @@ app.whenReady().then(() => {
   createTray();
   startMediaWorker();
 
+  // Register Global Hotkeys
+  try {
+    globalShortcut.register('CommandOrControl+Alt+L', () => {
+      if (overlayWindow && !overlayWindow.isDestroyed()) {
+        if (overlayWindow.isVisible()) overlayWindow.hide();
+        else overlayWindow.show();
+      }
+    });
+
+    globalShortcut.register('CommandOrControl+Alt+O', () => {
+      setClickThrough(!isClickThrough);
+    });
+  } catch (err) {
+    console.error('Error registering global shortcuts:', err);
+  }
+
   try {
     app.setLoginItemSettings({
       openAtLogin: true,
       openAsHidden: false
     });
   } catch (err) {}
+});
+
+app.on('will-quit', () => {
+  try {
+    globalShortcut.unregisterAll();
+  } catch (e) {}
+  stopMediaWorker();
 });
 
 app.on('window-all-closed', () => {

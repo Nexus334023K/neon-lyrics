@@ -4,7 +4,15 @@
   <meta charset="UTF-8">
   <title>NeonLyrics Studio & Settings</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap');
+
+    :root {
+      --accent: #00f2fe;
+      --accent-grad: linear-gradient(135deg, #00f2fe, #4facfe);
+      --bg: #0b0f19;
+      --card-bg: rgba(255, 255, 255, 0.04);
+      --card-border: rgba(255, 255, 255, 0.07);
+    }
 
     * {
       margin: 0;
@@ -14,12 +22,23 @@
     }
 
     body {
-      background: #0f1322;
+      background: var(--bg);
       color: #fff;
       font-family: 'Outfit', 'Inter', system-ui, sans-serif;
-      padding: 24px;
+      padding: 22px;
       height: 100vh;
       overflow-y: auto;
+    }
+
+    body::-webkit-scrollbar {
+      width: 7px;
+    }
+    body::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.2);
+    }
+    body::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.18);
+      border-radius: 4px;
     }
 
     .header {
@@ -32,39 +51,57 @@
     }
 
     .title {
-      font-size: 20px;
+      font-size: 19px;
       font-weight: 800;
       display: flex;
       align-items: center;
       gap: 10px;
+      background: linear-gradient(135deg, #00f2fe, #a855f7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .badge-v {
+      font-size: 11px;
+      font-weight: 700;
+      background: rgba(0, 242, 254, 0.18);
+      color: #00f2fe;
+      padding: 3px 8px;
+      border-radius: 12px;
+      border: 1px solid rgba(0, 242, 254, 0.3);
+      -webkit-text-fill-color: #00f2fe;
     }
 
     .section-title {
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.8px;
-      color: rgba(255, 255, 255, 0.6);
-      margin-bottom: 12px;
-      margin-top: 18px;
+      letter-spacing: 0.9px;
+      color: rgba(255, 255, 255, 0.55);
+      margin-bottom: 10px;
+      margin-top: 20px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
     .section-title:first-of-type {
       margin-top: 0;
     }
 
+    /* Palette Grid */
     .palette-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 10px;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
 
     .palette-btn {
-      height: 42px;
+      height: 38px;
       border: 2px solid transparent;
-      border-radius: 10px;
+      border-radius: 9px;
       color: #fff;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 700;
       cursor: pointer;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
@@ -79,46 +116,105 @@
       box-shadow: 0 0 14px rgba(255, 255, 255, 0.7);
     }
 
+    /* Color Pickers */
     .color-pickers-row {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 12px;
-      margin-bottom: 16px;
+      gap: 10px;
+      margin-bottom: 14px;
     }
 
     .picker-item {
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 5px;
     }
     .picker-item label {
       font-size: 11px;
       font-weight: 600;
-      color: rgba(255, 255, 255, 0.8);
+      color: rgba(255, 255, 255, 0.75);
     }
     .picker-item input[type="color"] {
       width: 100%;
-      height: 38px;
+      height: 36px;
       border: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: 8px;
       background: transparent;
       cursor: pointer;
     }
 
+    /* Segmented Controls */
+    .segmented-wrap {
+      display: flex;
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 10px;
+      padding: 3px;
+      gap: 4px;
+      border: 1px solid var(--card-border);
+    }
+    .seg-btn {
+      flex: 1;
+      padding: 8px 12px;
+      background: transparent;
+      border: none;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 12px;
+      font-weight: 600;
+      border-radius: 7px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .seg-btn:hover {
+      color: #fff;
+    }
+    .seg-btn.active {
+      background: rgba(255, 255, 255, 0.15);
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Select Dropdown */
+    .select-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 14px;
+      background: var(--card-bg);
+      border-radius: 10px;
+      border: 1px solid var(--card-border);
+      margin-bottom: 10px;
+    }
+    .select-row label {
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .custom-select {
+      background: rgba(20, 26, 42, 0.9);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      outline: none;
+    }
+
+    /* Sliders and Switches */
     .settings-group {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
     }
 
     .slider-row {
       display: flex;
       flex-direction: column;
       gap: 6px;
-      background: rgba(255, 255, 255, 0.04);
-      padding: 12px 16px;
+      background: var(--card-bg);
+      padding: 10px 14px;
       border-radius: 10px;
-      border: 1px solid rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--card-border);
     }
     .slider-label-wrap {
       display: flex;
@@ -126,38 +222,104 @@
       font-size: 13px;
       font-weight: 600;
     }
+    .slider-val {
+      color: var(--accent);
+      font-family: monospace;
+    }
     .slider-row input[type="range"] {
-      accent-color: #00f2fe;
+      accent-color: var(--accent);
       cursor: pointer;
+    }
+
+    .sync-buttons-row {
+      display: flex;
+      gap: 6px;
+      margin-top: 4px;
+    }
+    .sync-btn {
+      flex: 1;
+      padding: 5px 8px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.85);
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .sync-btn:hover {
+      background: rgba(255, 255, 255, 0.18);
+      color: #fff;
     }
 
     .switch-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 12px 16px;
-      background: rgba(255, 255, 255, 0.04);
+      padding: 11px 14px;
+      background: var(--card-bg);
       border-radius: 10px;
-      border: 1px solid rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--card-border);
       font-size: 13px;
       font-weight: 600;
     }
+    .switch-row-desc {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .switch-desc {
+      font-size: 11px;
+      font-weight: 400;
+      color: rgba(255, 255, 255, 0.5);
+    }
     .switch-row input[type="checkbox"] {
-      width: 20px;
-      height: 20px;
-      accent-color: #00f2fe;
+      width: 19px;
+      height: 19px;
+      accent-color: var(--accent);
       cursor: pointer;
+    }
+
+    /* Hotkey Cards */
+    .hotkey-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .hotkey-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 9px 14px;
+      background: rgba(0, 0, 0, 0.25);
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      font-size: 12px;
+    }
+    .kbd {
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 3px 8px;
+      border-radius: 5px;
+      font-family: monospace;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent);
     }
   </style>
 </head>
 <body>
   <div class="header">
     <div class="title">
-      <span>🎨 NeonLyrics Customization Studio</span>
+      <span>✨ NeonLyrics Studio</span>
+      <span class="badge-v">v2.1</span>
     </div>
   </div>
 
-  <div class="section-title">Color Themes</div>
+  <!-- Color Themes -->
+  <div class="section-title">🎨 Color Themes</div>
   <div class="palette-grid">
     <button class="palette-btn" data-theme="theme-cyber" style="background: linear-gradient(135deg, #00f2fe, #4facfe);">Cyber Aqua</button>
     <button class="palette-btn" data-theme="theme-neon-pink" style="background: linear-gradient(135deg, #ff007f, #a855f7);">Neon Pink</button>
@@ -169,7 +331,8 @@
     <button class="palette-btn" data-theme="theme-crimson-red" style="background: linear-gradient(135deg, #ef4444, #991b1b);">Crimson Red</button>
   </div>
 
-  <div class="section-title">Custom Color Mixers</div>
+  <!-- Custom Colors -->
+  <div class="section-title">🧪 Custom Color Mixers</div>
   <div class="color-pickers-row">
     <div class="picker-item">
       <label>Primary Glow</label>
@@ -189,12 +352,41 @@
     </div>
   </div>
 
-  <div class="section-title">Text Scaling & Glow</div>
+  <!-- Display & Typography -->
+  <div class="section-title">📐 Display & Typography</div>
   <div class="settings-group">
+    <div class="select-row">
+      <label>Font Family</label>
+      <select id="select-font" class="custom-select">
+        <option value="'Outfit', sans-serif">Outfit (Modern)</option>
+        <option value="'Inter', sans-serif">Inter (Clean)</option>
+        <option value="'Poppins', sans-serif">Poppins (Geometric)</option>
+        <option value="'Montserrat', sans-serif">Montserrat (Bold)</option>
+      </select>
+    </div>
+
+    <div class="select-row">
+      <label>Lyrics Line Mode</label>
+      <div class="segmented-wrap" id="line-mode-wrap">
+        <button class="seg-btn" data-val="1">1 Line (Minimal)</button>
+        <button class="seg-btn" data-val="2">2 Lines (Standard)</button>
+        <button class="seg-btn" data-val="3">3 Lines (Stage)</button>
+      </div>
+    </div>
+
+    <div class="select-row">
+      <label>Text Alignment</label>
+      <div class="segmented-wrap" id="align-wrap">
+        <button class="seg-btn" data-val="left">Left</button>
+        <button class="seg-btn" data-val="center">Center</button>
+        <button class="seg-btn" data-val="right">Right</button>
+      </div>
+    </div>
+
     <div class="slider-row">
       <div class="slider-label-wrap">
-        <span>Font Size Scaling</span>
-        <span id="font-val">100%</span>
+        <span>Font Scaling</span>
+        <span class="slider-val" id="font-val">100%</span>
       </div>
       <input type="range" id="slider-font" min="70" max="180" value="100">
     </div>
@@ -202,19 +394,98 @@
     <div class="slider-row">
       <div class="slider-label-wrap">
         <span>Glow Intensity</span>
-        <span id="glow-val">100%</span>
+        <span class="slider-val" id="glow-val">100%</span>
       </div>
       <input type="range" id="slider-glow" min="20" max="180" value="100">
     </div>
+  </div>
 
+  <!-- Frosted Glass Backdrop -->
+  <div class="section-title">🪟 Frosted Glass Backdrop</div>
+  <div class="settings-group">
+    <div class="slider-row">
+      <div class="slider-label-wrap">
+        <span>Backdrop Card Opacity (Readability on light wallpapers)</span>
+        <span class="slider-val" id="backdrop-opacity-val">0%</span>
+      </div>
+      <input type="range" id="slider-backdrop-opacity" min="0" max="85" value="0">
+    </div>
+    <div class="slider-row">
+      <div class="slider-label-wrap">
+        <span>Backdrop Glass Blur</span>
+        <span class="slider-val" id="backdrop-blur-val">16px</span>
+      </div>
+      <input type="range" id="slider-backdrop-blur" min="4" max="32" value="16">
+    </div>
+  </div>
+
+  <!-- Lyrics Timing Offset -->
+  <div class="section-title">⏱️ Lyrics Sync Offset</div>
+  <div class="settings-group">
+    <div class="slider-row">
+      <div class="slider-label-wrap">
+        <span>Timing Adjust (Ahead / Behind music)</span>
+        <span class="slider-val" id="offset-val">0.0s</span>
+      </div>
+      <input type="range" id="slider-offset" min="-50" max="50" value="0">
+      <div class="sync-buttons-row">
+        <button class="sync-btn" id="btn-nudge-back-large">-0.5s</button>
+        <button class="sync-btn" id="btn-nudge-back">-0.1s</button>
+        <button class="sync-btn" id="btn-nudge-reset">Reset (0.0s)</button>
+        <button class="sync-btn" id="btn-nudge-fwd">+0.1s</button>
+        <button class="sync-btn" id="btn-nudge-fwd-large">+0.5s</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mini Player & Controls -->
+  <div class="section-title">🎵 Mini Player & Media Controls</div>
+  <div class="settings-group">
     <div class="switch-row">
-      <span>Always On Top (Stay above apps)</span>
+      <div class="switch-row-desc">
+        <span>Show Mini Player Bar</span>
+        <span class="switch-desc">Displays track title, artist, progress bar & controls</span>
+      </div>
+      <input type="checkbox" id="chk-mini-player" checked>
+    </div>
+  </div>
+
+  <!-- Window & Behavior -->
+  <div class="section-title">⚙️ Behavior & Shortcuts</div>
+  <div class="settings-group">
+    <div class="switch-row">
+      <div class="switch-row-desc">
+        <span>Always On Top</span>
+        <span class="switch-desc">Keep overlay visible above full-screen windows & games</span>
+      </div>
       <input type="checkbox" id="chk-always-on-top">
     </div>
 
     <div class="switch-row">
-      <span>Run on Windows Startup</span>
+      <div class="switch-row-desc">
+        <span>Ghost Mode (Click-Through)</span>
+        <span class="switch-desc">Pass all mouse clicks through so lyrics won't be dragged accidentally</span>
+      </div>
+      <input type="checkbox" id="chk-click-through">
+    </div>
+
+    <div class="switch-row">
+      <div class="switch-row-desc">
+        <span>Run on Windows Startup</span>
+        <span class="switch-desc">Auto-start NeonLyrics when Windows boots</span>
+      </div>
       <input type="checkbox" id="chk-startup" checked>
+    </div>
+
+    <div class="hotkey-list">
+      <div class="hotkey-item">
+        <span>Show / Hide Floating Lyrics</span>
+        <span class="kbd">Ctrl + Alt + L</span>
+      </div>
+      <div class="hotkey-item">
+        <span>Toggle Ghost Mode (Click-Through)</span>
+        <span class="kbd">Ctrl + Alt + O</span>
+      </div>
     </div>
   </div>
 
@@ -230,6 +501,15 @@
       sungWordColor: '#ffffff',
       glowIntensity: 1.0,
       fontScale: 1.0,
+      fontFamily: "'Outfit', sans-serif",
+      textAlign: 'center',
+      lineMode: 2,
+      syncOffset: 0.0,
+      backdropOpacity: 0.0,
+      backdropBlur: 16,
+      showMiniPlayer: true,
+      miniPlayerCollapsed: false,
+      isClickThrough: false,
       alwaysOnTop: false,
       autoStart: true
     };
@@ -250,6 +530,7 @@
     }
 
     function applyUI() {
+      // Themes
       document.querySelectorAll('.palette-btn').forEach(b => {
         b.classList.toggle('active', !config.isCustomColor && b.dataset.theme === config.theme);
       });
@@ -258,16 +539,44 @@
       document.getElementById('picker-active-word').value = config.activeWordColor;
       document.getElementById('picker-sung-word').value = config.sungWordColor;
 
+      // Font & Scaling
+      document.getElementById('select-font').value = config.fontFamily || "'Outfit', sans-serif";
       document.getElementById('slider-font').value = Math.round(config.fontScale * 100);
       document.getElementById('font-val').textContent = `${Math.round(config.fontScale * 100)}%`;
 
       document.getElementById('slider-glow').value = Math.round(config.glowIntensity * 100);
       document.getElementById('glow-val').textContent = `${Math.round(config.glowIntensity * 100)}%`;
 
+      // Segmented Controls
+      document.querySelectorAll('#line-mode-wrap .seg-btn').forEach(b => {
+        b.classList.toggle('active', parseInt(b.dataset.val) === (config.lineMode || 2));
+      });
+      document.querySelectorAll('#align-wrap .seg-btn').forEach(b => {
+        b.classList.toggle('active', b.dataset.val === (config.textAlign || 'center'));
+      });
+
+      // Backdrop
+      const opacityPct = Math.round((config.backdropOpacity ?? 0) * 100);
+      document.getElementById('slider-backdrop-opacity').value = opacityPct;
+      document.getElementById('backdrop-opacity-val').textContent = `${opacityPct}%`;
+
+      const blurVal = config.backdropBlur ?? 16;
+      document.getElementById('slider-backdrop-blur').value = blurVal;
+      document.getElementById('backdrop-blur-val').textContent = `${blurVal}px`;
+
+      // Sync Offset
+      const offsetVal = parseFloat(config.syncOffset || 0);
+      document.getElementById('slider-offset').value = Math.round(offsetVal * 10);
+      document.getElementById('offset-val').textContent = `${offsetVal >= 0 ? '+' : ''}${offsetVal.toFixed(1)}s`;
+
+      // Switches
+      document.getElementById('chk-mini-player').checked = config.showMiniPlayer !== false;
       document.getElementById('chk-always-on-top').checked = config.alwaysOnTop;
+      document.getElementById('chk-click-through').checked = config.isClickThrough;
       document.getElementById('chk-startup').checked = config.autoStart;
     }
 
+    // Palette Clicks
     document.querySelectorAll('.palette-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         config.isCustomColor = false;
@@ -277,6 +586,7 @@
       });
     });
 
+    // Custom Color Inputs
     ['picker-primary', 'picker-secondary', 'picker-active-word', 'picker-sung-word'].forEach(id => {
       document.getElementById(id).addEventListener('input', () => {
         config.isCustomColor = true;
@@ -289,6 +599,31 @@
       });
     });
 
+    // Font Family
+    document.getElementById('select-font').addEventListener('change', (e) => {
+      config.fontFamily = e.target.value;
+      saveSettings();
+    });
+
+    // Line Mode Segmented
+    document.querySelectorAll('#line-mode-wrap .seg-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        config.lineMode = parseInt(btn.dataset.val);
+        applyUI();
+        saveSettings();
+      });
+    });
+
+    // Alignment Segmented
+    document.querySelectorAll('#align-wrap .seg-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        config.textAlign = btn.dataset.val;
+        applyUI();
+        saveSettings();
+      });
+    });
+
+    // Sliders
     document.getElementById('slider-font').addEventListener('input', (e) => {
       config.fontScale = parseFloat(e.target.value) / 100;
       document.getElementById('font-val').textContent = `${e.target.value}%`;
@@ -301,9 +636,51 @@
       saveSettings();
     });
 
+    document.getElementById('slider-backdrop-opacity').addEventListener('input', (e) => {
+      config.backdropOpacity = parseFloat(e.target.value) / 100;
+      document.getElementById('backdrop-opacity-val').textContent = `${e.target.value}%`;
+      saveSettings();
+    });
+
+    document.getElementById('slider-backdrop-blur').addEventListener('input', (e) => {
+      config.backdropBlur = parseInt(e.target.value);
+      document.getElementById('backdrop-blur-val').textContent = `${e.target.value}px`;
+      saveSettings();
+    });
+
+    // Offset Slider & Quick Nudges
+    function setOffset(sec) {
+      config.syncOffset = Math.round(sec * 10) / 10;
+      applyUI();
+      saveSettings();
+    }
+
+    document.getElementById('slider-offset').addEventListener('input', (e) => {
+      setOffset(parseInt(e.target.value) / 10);
+    });
+
+    document.getElementById('btn-nudge-back-large').addEventListener('click', () => setOffset(config.syncOffset - 0.5));
+    document.getElementById('btn-nudge-back').addEventListener('click', () => setOffset(config.syncOffset - 0.1));
+    document.getElementById('btn-nudge-reset').addEventListener('click', () => setOffset(0.0));
+    document.getElementById('btn-nudge-fwd').addEventListener('click', () => setOffset(config.syncOffset + 0.1));
+    document.getElementById('btn-nudge-fwd-large').addEventListener('click', () => setOffset(config.syncOffset + 0.5));
+
+    // Mini Player Toggle
+    document.getElementById('chk-mini-player').addEventListener('change', (e) => {
+      config.showMiniPlayer = e.target.checked;
+      saveSettings();
+    });
+
+    // Window Toggles
     document.getElementById('chk-always-on-top').addEventListener('change', (e) => {
       config.alwaysOnTop = e.target.checked;
       ipcRenderer.send('toggle-always-on-top', config.alwaysOnTop);
+      saveSettings();
+    });
+
+    document.getElementById('chk-click-through').addEventListener('change', (e) => {
+      config.isClickThrough = e.target.checked;
+      ipcRenderer.send('toggle-click-through', config.isClickThrough);
       saveSettings();
     });
 
@@ -311,6 +688,11 @@
       config.autoStart = e.target.checked;
       ipcRenderer.send('toggle-startup', config.autoStart);
       saveSettings();
+    });
+
+    ipcRenderer.on('click-through-toggled', (event, val) => {
+      config.isClickThrough = val;
+      document.getElementById('chk-click-through').checked = val;
     });
 
     loadSettings();

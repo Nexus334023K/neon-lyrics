@@ -7,7 +7,7 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "build:py": "python -m PyInstaller --noconfirm --onedir --collect-all winsdk --distpath py_dist --workpath py_build media_worker.py",
+    "build:py": "python -c \"import os; os.system('taskkill /F /IM media_worker.exe >nul 2>&1')\" && python -m PyInstaller --noconfirm --onedir --collect-all winsdk --distpath py_dist --workpath py_build media_worker.py",
     "dist": "electron-builder --win nsis",
     "build": "npm run build:py && npm run dist"
   },

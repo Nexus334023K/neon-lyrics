@@ -12,6 +12,8 @@ import sys
 import urllib.request
 import urllib.parse
 import datetime
+import threading
+import queue
 
 # LRCLIB & Lyrics Parser
 app_data = os.environ.get('APPDATA') or os.path.expanduser('~')
@@ -164,6 +166,23 @@ def parse_lrc(lrc_text):
     return lines
 
 
+cmd_queue = queue.Queue()
+
+def stdin_reader():
+    while True:
+        try:
+            line = sys.stdin.readline()
+            if not line:
+                break
+            line = line.strip()
+            if line:
+                cmd_queue.put(json.loads(line))
+        except Exception:
+            pass
+
+threading.Thread(target=stdin_reader, daemon=True).start()
+
+
 async def run_worker():
     from winsdk.windows.media.control import (
         GlobalSystemMediaTransportControlsSessionManager as SessionManager,
@@ -176,6 +195,29 @@ async def run_worker():
 
     while True:
         try:
+            # Process incoming control commands
+            while not cmd_queue.empty():
+                try:
+                    cmd = cmd_queue.get_nowait()
+                    action = cmd.get("action")
+                    active_ctrl_session = session_manager.get_current_session()
+                    if not active_ctrl_session:
+                        for s in session_manager.get_sessions():
+                            active_ctrl_session = s
+                            break
+                    if active_ctrl_session:
+                        if action == "play_pause":
+                            await active_ctrl_session.try_toggle_play_pause_async()
+                        elif action == "next":
+                            await active_ctrl_session.try_skip_next_async()
+                        elif action == "prev":
+                            await active_ctrl_session.try_skip_previous_async()
+                        elif action == "seek" and "position" in cmd:
+                            ticks = int(float(cmd["position"]) * 10000000)
+                            await active_ctrl_session.try_change_playback_position_async(ticks)
+                except Exception:
+                    pass
+
             session = session_manager.get_current_session()
             if not session or session.get_playback_info().playback_status != PlaybackStatus.PLAYING:
                 for s in session_manager.get_sessions():

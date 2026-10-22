@@ -7,9 +7,58 @@
 </head>
 <body class="theme-cyber">
   <div class="lyrics-root" id="lyrics-root">
-    <div class="stage">
-      <div class="line active-line" id="active-line"></div>
-      <div class="line next-line" id="next-line"></div>
+    <div class="lyrics-container" id="lyrics-container">
+      
+      <!-- Stage with 3-line support -->
+      <div class="stage" id="stage">
+        <div class="line past-line" id="past-line"></div>
+        <div class="line active-line" id="active-line"></div>
+        <div class="line next-line" id="next-line"></div>
+      </div>
+
+      <!-- Glassmorphic Mini Player Bar -->
+      <div class="mini-player" id="mini-player">
+        <button class="player-toggle-btn no-drag" id="player-toggle-btn" title="Hide/Show Mini Player">
+          <svg class="toggle-icon-down" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          <svg class="toggle-icon-up" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"></polyline></svg>
+        </button>
+
+        <div class="mini-player-body" id="mini-player-body">
+          <div class="player-left">
+            <div class="visualizer-bars">
+              <span></span><span></span><span></span><span></span>
+            </div>
+            <div class="track-details">
+              <span class="player-title" id="player-title">Waiting for music...</span>
+              <span class="player-artist" id="player-artist">Spotify / Windows Media</span>
+            </div>
+          </div>
+
+          <div class="player-center">
+            <div class="controls-row no-drag">
+              <button class="ctrl-btn" id="btn-prev" title="Previous Track">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><polygon points="19 20 9 12 19 4 19 20"></polygon><line x1="5" y1="19" x2="5" y2="5" stroke="currentColor" stroke-width="3"></line></svg>
+              </button>
+              <button class="ctrl-btn play-pause-btn" id="btn-play-pause" title="Play / Pause">
+                <svg id="icon-play" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                <svg id="icon-pause" style="display:none;" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+              </button>
+              <button class="ctrl-btn" id="btn-next" title="Next Track">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 4 15 12 5 20 5 4"></polygon><line x1="19" y1="5" x2="19" y2="19" stroke="currentColor" stroke-width="3"></line></svg>
+              </button>
+            </div>
+
+            <div class="progress-wrap no-drag">
+              <span class="time-label" id="time-current">0:00</span>
+              <div class="progress-bar-container" id="progress-container">
+                <div class="progress-bar-fill" id="progress-fill"></div>
+              </div>
+              <span class="time-label" id="time-total">0:00</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 
