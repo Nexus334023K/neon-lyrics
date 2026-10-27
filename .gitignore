@@ -7,3 +7,5 @@ py_dist/
 py_build/
 release/
 *.spec
+__pycache__/
+*.pyc

@@ -2,16 +2,17 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>NeonLyrics Studio & Settings</title>
+  <title>NeonLyrics v3 - Customization Studio</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap');
 
     :root {
       --accent: #00f2fe;
       --accent-grad: linear-gradient(135deg, #00f2fe, #4facfe);
       --bg: #0b0f19;
       --card-bg: rgba(255, 255, 255, 0.04);
-      --card-border: rgba(255, 255, 255, 0.07);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --tab-active: rgba(0, 242, 254, 0.15);
     }
 
     * {
@@ -25,29 +26,33 @@
       background: var(--bg);
       color: #fff;
       font-family: 'Outfit', 'Inter', system-ui, sans-serif;
-      padding: 22px;
+      padding: 18px;
       height: 100vh;
-      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
     }
 
-    body::-webkit-scrollbar {
-      width: 7px;
+    /* Custom Scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
     }
-    body::-webkit-scrollbar-track {
+    ::-webkit-scrollbar-track {
       background: rgba(0, 0, 0, 0.2);
     }
-    body::-webkit-scrollbar-thumb {
+    ::-webkit-scrollbar-thumb {
       background: rgba(255, 255, 255, 0.18);
       border-radius: 4px;
     }
 
+    /* Header */
     .header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 20px;
-      padding-bottom: 14px;
+      padding-bottom: 12px;
       border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      flex-shrink: 0;
     }
 
     .title {
@@ -72,6 +77,58 @@
       -webkit-text-fill-color: #00f2fe;
     }
 
+    /* Tabs Bar */
+    .tabs-bar {
+      display: flex;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.03);
+      padding: 4px;
+      border-radius: 10px;
+      border: 1px solid var(--card-border);
+      margin: 14px 0 16px 0;
+      flex-shrink: 0;
+      overflow-x: auto;
+    }
+
+    .tab-btn {
+      padding: 8px 14px;
+      background: transparent;
+      border: none;
+      color: rgba(255, 255, 255, 0.65);
+      font-size: 12px;
+      font-weight: 600;
+      border-radius: 7px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .tab-btn:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .tab-btn.active {
+      color: #00f2fe;
+      background: var(--tab-active);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+    }
+
+    /* Tab Content Area */
+    .tab-content {
+      flex: 1;
+      overflow-y: auto;
+      padding-right: 4px;
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
     .section-title {
       font-size: 11px;
       font-weight: 700;
@@ -79,7 +136,7 @@
       letter-spacing: 0.9px;
       color: rgba(255, 255, 255, 0.55);
       margin-bottom: 10px;
-      margin-top: 20px;
+      margin-top: 18px;
       display: flex;
       align-items: center;
       gap: 6px;
@@ -92,7 +149,7 @@
     .palette-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
+      gap: 8px;
       margin-bottom: 14px;
     }
 
@@ -120,7 +177,7 @@
     .color-pickers-row {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
+      gap: 8px;
       margin-bottom: 14px;
     }
 
@@ -154,7 +211,7 @@
     }
     .seg-btn {
       flex: 1;
-      padding: 8px 12px;
+      padding: 7px 12px;
       background: transparent;
       border: none;
       color: rgba(255, 255, 255, 0.7);
@@ -168,7 +225,7 @@
       color: #fff;
     }
     .seg-btn.active {
-      background: rgba(255, 255, 255, 0.15);
+      background: rgba(255, 255, 255, 0.16);
       color: #fff;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
     }
@@ -178,11 +235,11 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 10px 14px;
+      padding: 9px 12px;
       background: var(--card-bg);
       border-radius: 10px;
       border: 1px solid var(--card-border);
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
     .select-row label {
       font-size: 13px;
@@ -200,177 +257,291 @@
       outline: none;
     }
 
-    /* Sliders and Switches */
-    .settings-group {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
+    /* Sliders */
     .slider-row {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      background: var(--card-bg);
       padding: 10px 14px;
+      background: var(--card-bg);
       border-radius: 10px;
       border: 1px solid var(--card-border);
+      margin-bottom: 8px;
     }
-    .slider-label-wrap {
+    .slider-header {
       display: flex;
       justify-content: space-between;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 600;
+      margin-bottom: 7px;
     }
     .slider-val {
       color: var(--accent);
       font-family: monospace;
     }
-    .slider-row input[type="range"] {
+    input[type="range"] {
+      width: 100%;
+      height: 5px;
       accent-color: var(--accent);
       cursor: pointer;
     }
 
-    .sync-buttons-row {
-      display: flex;
-      gap: 6px;
-      margin-top: 4px;
-    }
-    .sync-btn {
-      flex: 1;
-      padding: 5px 8px;
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      color: rgba(255, 255, 255, 0.85);
-      border-radius: 6px;
-      font-size: 11px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.15s ease;
-    }
-    .sync-btn:hover {
-      background: rgba(255, 255, 255, 0.18);
-      color: #fff;
-    }
-
+    /* Toggle Switches */
     .switch-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 11px 14px;
+      padding: 10px 14px;
       background: var(--card-bg);
       border-radius: 10px;
       border: 1px solid var(--card-border);
-      font-size: 13px;
-      font-weight: 600;
+      margin-bottom: 8px;
     }
-    .switch-row-desc {
+    .switch-info {
       display: flex;
       flex-direction: column;
       gap: 2px;
     }
+    .switch-title {
+      font-size: 13px;
+      font-weight: 600;
+    }
     .switch-desc {
       font-size: 11px;
-      font-weight: 400;
       color: rgba(255, 255, 255, 0.5);
     }
-    .switch-row input[type="checkbox"] {
-      width: 19px;
-      height: 19px;
-      accent-color: var(--accent);
+    .switch-input {
+      appearance: none;
+      width: 40px;
+      height: 22px;
+      background: rgba(255, 255, 255, 0.18);
+      border-radius: 20px;
+      position: relative;
       cursor: pointer;
+      outline: none;
+      transition: background 0.2s ease;
+    }
+    .switch-input:checked {
+      background: var(--accent);
+    }
+    .switch-input::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 18px;
+      height: 18px;
+      background: #fff;
+      border-radius: 50%;
+      transition: transform 0.2s ease;
+    }
+    .switch-input:checked::after {
+      transform: translateX(18px);
     }
 
-    /* Hotkey Cards */
-    .hotkey-list {
+    /* Buttons & Inputs */
+    .btn-action {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--card-border);
+      color: #fff;
+      padding: 8px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-action:hover {
+      background: rgba(255, 255, 255, 0.16);
+      border-color: #fff;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #00f2fe, #4facfe);
+      color: #0b0f19;
+      font-weight: 700;
+      border: none;
+    }
+    .btn-primary:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+
+    .input-text {
+      background: rgba(20, 26, 42, 0.9);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 12px;
+      outline: none;
+      width: 100%;
+    }
+    .input-text:focus {
+      border-color: var(--accent);
+    }
+
+    /* Cards & Lists */
+    .card-box {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 14px;
+      margin-bottom: 12px;
+    }
+
+    .list-item {
       display: flex;
-      flex-direction: column;
-      gap: 8px;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      gap: 12px;
+    }
+    .list-item:last-child {
+      border-bottom: none;
+    }
+
+    .list-art {
+      width: 34px;
+      height: 34px;
+      border-radius: 6px;
+      object-fit: cover;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .list-info {
+      flex: 1;
+      overflow: hidden;
+    }
+    .list-title {
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .list-sub {
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.55);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Nudge Row */
+    .nudge-row {
+      display: flex;
+      gap: 6px;
       margin-top: 8px;
     }
-    .hotkey-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 9px 14px;
-      background: rgba(0, 0, 0, 0.25);
-      border-radius: 8px;
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      font-size: 12px;
-    }
-    .kbd {
-      background: rgba(255, 255, 255, 0.12);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      padding: 3px 8px;
-      border-radius: 5px;
-      font-family: monospace;
+    .btn-nudge {
+      flex: 1;
+      padding: 5px;
       font-size: 11px;
       font-weight: 700;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      color: #fff;
+      cursor: pointer;
+    }
+    .btn-nudge:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .tag-badge {
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: rgba(0, 242, 254, 0.15);
+      color: #00f2fe;
+    }
+
+    .hotkey-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+    .hotkey-table td {
+      padding: 8px 6px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .hotkey-kbd {
+      background: rgba(255, 255, 255, 0.12);
+      padding: 3px 6px;
+      border-radius: 4px;
+      font-family: monospace;
+      font-weight: bold;
       color: var(--accent);
+      border: 1px solid rgba(255, 255, 255, 0.15);
     }
   </style>
 </head>
 <body>
+
+  <!-- Header -->
   <div class="header">
     <div class="title">
-      <span>✨ NeonLyrics Studio</span>
-      <span class="badge-v">v2.1</span>
+      ✨ NeonLyrics Studio
+      <span class="badge-v">v3.0.0</span>
+    </div>
+    <div style="font-size: 11px; color: rgba(255, 255, 255, 0.5);">
+      Windows Karaoke Engine
     </div>
   </div>
 
-  <!-- Color Themes -->
-  <div class="section-title">🎨 Color Themes</div>
-  <div class="palette-grid">
-    <button class="palette-btn" data-theme="theme-cyber" style="background: linear-gradient(135deg, #00f2fe, #4facfe);">Cyber Aqua</button>
-    <button class="palette-btn" data-theme="theme-neon-pink" style="background: linear-gradient(135deg, #ff007f, #a855f7);">Neon Pink</button>
-    <button class="palette-btn" data-theme="theme-aurora-green" style="background: linear-gradient(135deg, #00ff87, #60efff);">Aurora Mint</button>
-    <button class="palette-btn" data-theme="theme-sunset-amber" style="background: linear-gradient(135deg, #ff9900, #ff0055);">Sunset Amber</button>
-    <button class="palette-btn" data-theme="theme-diamond-white" style="background: linear-gradient(135deg, #ffffff, #94a3b8); color: #000;">Diamond White</button>
-    <button class="palette-btn" data-theme="theme-electric-purple" style="background: linear-gradient(135deg, #8b5cf6, #3b82f6);">Electric Purple</button>
-    <button class="palette-btn" data-theme="theme-cyber-volt" style="background: linear-gradient(135deg, #eab308, #f97316);">Cyber Volt</button>
-    <button class="palette-btn" data-theme="theme-crimson-red" style="background: linear-gradient(135deg, #ef4444, #991b1b);">Crimson Red</button>
+  <!-- Tabs Navigation -->
+  <div class="tabs-bar">
+    <button class="tab-btn active" data-tab="tab-visual">🎨 Visual Studio</button>
+    <button class="tab-btn" data-tab="tab-lyrics">🎵 Lyrics & Sync</button>
+    <button class="tab-btn" data-tab="tab-favs">⭐ Favorites & History</button>
+    <button class="tab-btn" data-tab="tab-spotify">🎧 Spotify & Source</button>
+    <button class="tab-btn" data-tab="tab-ai">🤖 Lyric Insights</button>
+    <button class="tab-btn" data-tab="tab-hotkeys">⌨️ Shortcuts</button>
   </div>
 
-  <!-- Custom Colors -->
-  <div class="section-title">🧪 Custom Color Mixers</div>
-  <div class="color-pickers-row">
-    <div class="picker-item">
-      <label>Primary Glow</label>
-      <input type="color" id="picker-primary" value="#00f2fe">
+  <!-- TAB 1: VISUAL STUDIO -->
+  <div class="tab-content active" id="tab-visual">
+    
+    <div class="section-title">Quick Preset Themes</div>
+    <div class="palette-grid">
+      <button class="palette-btn" data-theme="theme-cyber" style="background: linear-gradient(135deg, #00f2fe, #4facfe);">Cyber Aqua</button>
+      <button class="palette-btn" data-theme="theme-neon-pink" style="background: linear-gradient(135deg, #ff007f, #a855f7);">Neon Pink</button>
+      <button class="palette-btn" data-theme="theme-aurora-green" style="background: linear-gradient(135deg, #00ff87, #60efff); color: #0b101e;">Aurora Mint</button>
+      <button class="palette-btn" data-theme="theme-sunset-amber" style="background: linear-gradient(135deg, #ff9900, #ff0055);">Sunset Amber</button>
+      <button class="palette-btn" data-theme="theme-diamond-white" style="background: linear-gradient(135deg, #ffffff, #94a3b8); color: #0b101e;">Diamond White</button>
+      <button class="palette-btn" data-theme="theme-electric-purple" style="background: linear-gradient(135deg, #8b5cf6, #3b82f6);">Electric Purple</button>
+      <button class="palette-btn" data-theme="theme-cyber-volt" style="background: linear-gradient(135deg, #eab308, #f97316); color: #0b101e;">Cyber Volt</button>
+      <button class="palette-btn" data-theme="theme-crimson-red" style="background: linear-gradient(135deg, #ef4444, #991b1b);">Crimson Red</button>
     </div>
-    <div class="picker-item">
-      <label>Secondary Aura</label>
-      <input type="color" id="picker-secondary" value="#4facfe">
-    </div>
-    <div class="picker-item">
-      <label>Active Word</label>
-      <input type="color" id="picker-active-word" value="#ffffff">
-    </div>
-    <div class="picker-item">
-      <label>Sung Words</label>
-      <input type="color" id="picker-sung-word" value="#ffffff">
-    </div>
-  </div>
 
-  <!-- Display & Typography -->
-  <div class="section-title">📐 Display & Typography</div>
-  <div class="settings-group">
+    <div class="section-title">Custom Color Matrix</div>
+    <div class="color-pickers-row">
+      <div class="picker-item">
+        <label>Primary Glow</label>
+        <input type="color" id="picker-primary" value="#00f2fe">
+      </div>
+      <div class="picker-item">
+        <label>Secondary Aura</label>
+        <input type="color" id="picker-secondary" value="#4facfe">
+      </div>
+      <div class="picker-item">
+        <label>Active Word</label>
+        <input type="color" id="picker-active-word" value="#ffffff">
+      </div>
+      <div class="picker-item">
+        <label>Sung Words</label>
+        <input type="color" id="picker-sung-word" value="#ffffff">
+      </div>
+    </div>
+
+    <div class="section-title">Layout & Display Modes</div>
     <div class="select-row">
-      <label>Font Family</label>
-      <select id="select-font" class="custom-select">
-        <option value="'Outfit', sans-serif">Outfit (Modern)</option>
-        <option value="'Inter', sans-serif">Inter (Clean)</option>
-        <option value="'Poppins', sans-serif">Poppins (Geometric)</option>
-        <option value="'Montserrat', sans-serif">Montserrat (Bold)</option>
-      </select>
-    </div>
-
-    <div class="select-row">
-      <label>Lyrics Line Mode</label>
+      <label>Display Lines Mode</label>
       <div class="segmented-wrap" id="line-mode-wrap">
-        <button class="seg-btn" data-val="1">1 Line (Minimal)</button>
-        <button class="seg-btn" data-val="2">2 Lines (Standard)</button>
-        <button class="seg-btn" data-val="3">3 Lines (Stage)</button>
+        <button class="seg-btn" data-val="1">1 Line (Ultra Compact)</button>
+        <button class="seg-btn active" data-val="2">2 Lines (Karaoke)</button>
+        <button class="seg-btn" data-val="3">3 Lines (Full Context)</button>
       </div>
     </div>
 
@@ -378,174 +549,285 @@
       <label>Text Alignment</label>
       <div class="segmented-wrap" id="align-wrap">
         <button class="seg-btn" data-val="left">Left</button>
-        <button class="seg-btn" data-val="center">Center</button>
+        <button class="seg-btn active" data-val="center">Center</button>
         <button class="seg-btn" data-val="right">Right</button>
       </div>
     </div>
 
+    <div class="select-row">
+      <label>Font Family</label>
+      <select class="custom-select" id="select-font">
+        <option value="'Outfit', sans-serif">Outfit (Modern Bold)</option>
+        <option value="'Inter', sans-serif">Inter (Clean Apple-Style)</option>
+        <option value="'Poppins', sans-serif">Poppins (Smooth Rounded)</option>
+        <option value="'Montserrat', sans-serif">Montserrat (Geometric Impact)</option>
+      </select>
+    </div>
+
     <div class="slider-row">
-      <div class="slider-label-wrap">
-        <span>Font Scaling</span>
+      <div class="slider-header">
+        <span>Font Size Scaling</span>
         <span class="slider-val" id="font-val">100%</span>
       </div>
       <input type="range" id="slider-font" min="70" max="180" value="100">
     </div>
 
     <div class="slider-row">
-      <div class="slider-label-wrap">
-        <span>Glow Intensity</span>
+      <div class="slider-header">
+        <span>Neon Glow Intensity</span>
         <span class="slider-val" id="glow-val">100%</span>
       </div>
-      <input type="range" id="slider-glow" min="20" max="180" value="100">
+      <input type="range" id="slider-glow" min="20" max="200" value="100">
     </div>
-  </div>
 
-  <!-- Frosted Glass Backdrop -->
-  <div class="section-title">🪟 Frosted Glass Backdrop</div>
-  <div class="settings-group">
     <div class="slider-row">
-      <div class="slider-label-wrap">
-        <span>Backdrop Card Opacity (Readability on light wallpapers)</span>
+      <div class="slider-header">
+        <span>Frosted Glass Opacity</span>
         <span class="slider-val" id="backdrop-opacity-val">0%</span>
       </div>
-      <input type="range" id="slider-backdrop-opacity" min="0" max="85" value="0">
+      <input type="range" id="slider-backdrop-opacity" min="0" max="95" value="0">
     </div>
+
     <div class="slider-row">
-      <div class="slider-label-wrap">
-        <span>Backdrop Glass Blur</span>
+      <div class="slider-header">
+        <span>Backdrop Blur Radius</span>
         <span class="slider-val" id="backdrop-blur-val">16px</span>
       </div>
-      <input type="range" id="slider-backdrop-blur" min="4" max="32" value="16">
+      <input type="range" id="slider-backdrop-blur" min="0" max="40" value="16">
     </div>
+
+    <div class="section-title">Window & Overlay Behaviors</div>
+    <div class="switch-row">
+      <div class="switch-info">
+        <span class="switch-title">Show Mini Player Bar</span>
+        <span class="switch-desc">Displays scrubbable progress, album artwork, and media controls</span>
+      </div>
+      <input type="checkbox" class="switch-input" id="chk-mini-player" checked>
+    </div>
+
+    <div class="switch-row">
+      <div class="switch-info">
+        <span class="switch-title">Always On Top</span>
+        <span class="switch-desc">Pin lyrics above full-screen and maximized windows</span>
+      </div>
+      <input type="checkbox" class="switch-input" id="chk-always-on-top">
+    </div>
+
+    <div class="switch-row">
+      <div class="switch-info">
+        <span class="switch-title">Ghost Mode (Click-Through)</span>
+        <span class="switch-desc">Mouse clicks pass through overlay directly to apps underneath [Ctrl+Alt+O]</span>
+      </div>
+      <input type="checkbox" class="switch-input" id="chk-click-through">
+    </div>
+
+    <div class="switch-row">
+      <div class="switch-info">
+        <span class="switch-title">Launch on Windows Startup</span>
+        <span class="switch-desc">Automatically launch in the background when your PC boots</span>
+      </div>
+      <input type="checkbox" class="switch-input" id="chk-startup" checked>
+    </div>
+
   </div>
 
-  <!-- Lyrics Timing Offset -->
-  <div class="section-title">⏱️ Lyrics Sync Offset</div>
-  <div class="settings-group">
-    <div class="slider-row">
-      <div class="slider-label-wrap">
-        <span>Timing Adjust (Ahead / Behind music)</span>
-        <span class="slider-val" id="offset-val">0.0s</span>
+  <!-- TAB 2: LYRICS & SYNC -->
+  <div class="tab-content" id="tab-lyrics">
+    <div class="card-box">
+      <div class="slider-header">
+        <span style="font-weight: 700;">Live Lyric Timing Offset</span>
+        <span class="slider-val" id="offset-val">+0.0s</span>
       </div>
       <input type="range" id="slider-offset" min="-50" max="50" value="0">
-      <div class="sync-buttons-row">
-        <button class="sync-btn" id="btn-nudge-back-large">-0.5s</button>
-        <button class="sync-btn" id="btn-nudge-back">-0.1s</button>
-        <button class="sync-btn" id="btn-nudge-reset">Reset (0.0s)</button>
-        <button class="sync-btn" id="btn-nudge-fwd">+0.1s</button>
-        <button class="sync-btn" id="btn-nudge-fwd-large">+0.5s</button>
+      <div class="nudge-row">
+        <button class="btn-nudge" id="btn-nudge-back-large">-0.5s</button>
+        <button class="btn-nudge" id="btn-nudge-back">-0.1s</button>
+        <button class="btn-nudge" id="btn-nudge-reset">Reset</button>
+        <button class="btn-nudge" id="btn-nudge-fwd">+0.1s</button>
+        <button class="btn-nudge" id="btn-nudge-fwd-large">+0.5s</button>
+      </div>
+    </div>
+
+    <div class="section-title">Manual Lyrics Search & Alternative Versions</div>
+    <div class="card-box">
+      <div style="display: flex; gap: 8px; margin-bottom: 10px;">
+        <input type="text" class="input-text" id="input-search-query" placeholder="Enter Artist and Title (e.g. The Weeknd Blinding Lights)">
+        <button class="btn-action btn-primary" id="btn-do-search">Search</button>
+      </div>
+
+      <div id="search-status" style="font-size: 11px; color: rgba(255,255,255,0.6); margin-bottom: 8px;"></div>
+      <div id="search-results-list" style="max-height: 220px; overflow-y: auto;">
+        <!-- Dynamic Results -->
+      </div>
+    </div>
+
+    <div class="section-title">LRC File Management</div>
+    <div class="card-box" style="display: flex; gap: 10px;">
+      <button class="btn-action" id="btn-import-lrc">📁 Import .LRC File</button>
+      <button class="btn-action" id="btn-export-lrc">💾 Export Current .LRC</button>
+    </div>
+  </div>
+
+  <!-- TAB 3: FAVORITES & HISTORY -->
+  <div class="tab-content" id="tab-favs">
+    <div class="section-title">Favorite Tracks</div>
+    <div class="card-box" id="favs-container" style="max-height: 220px; overflow-y: auto;">
+      <div style="font-size: 12px; color: rgba(255,255,255,0.5);">No favorite songs saved yet. Click the star in the overlay to favorite!</div>
+    </div>
+
+    <div style="display: flex; justify-content: space-between; align-items: center;" class="section-title">
+      <span>Recent Playback History</span>
+      <button class="btn-action" id="btn-clear-history" style="font-size: 10px; padding: 4px 8px;">Clear History</button>
+    </div>
+    <div class="card-box" id="history-container" style="max-height: 220px; overflow-y: auto;">
+      <div style="font-size: 12px; color: rgba(255,255,255,0.5);">History will appear as songs are played.</div>
+    </div>
+  </div>
+
+  <!-- TAB 4: SPOTIFY & SOURCE -->
+  <div class="tab-content" id="tab-spotify">
+    <div class="card-box">
+      <h3 style="font-size: 14px; margin-bottom: 6px; color: #00f2fe;">Windows GSMTC Media Bridge</h3>
+      <p style="font-size: 12px; line-height: 1.5; color: rgba(255,255,255,0.7); margin-bottom: 10px;">
+        NeonLyrics automatically hooks into the Windows Global System Media Transport Controls (GSMTC). It tracks playback, position, and metadata natively across <b>Spotify Desktop, Chrome, Edge, Brave, YouTube, iTunes</b>, and Windows Media Player out of the box with zero credentials required!
+      </p>
+      <div style="font-size: 12px; display: flex; align-items: center; gap: 6px;">
+        <span class="tag-badge">Active</span> Windows Media Session Listener Connected
+      </div>
+    </div>
+
+    <div class="section-title">Spotify Web API (Optional)</div>
+    <div class="card-box">
+      <p style="font-size: 12px; line-height: 1.5; color: rgba(255,255,255,0.7); margin-bottom: 10px;">
+        If you want enhanced Spotify catalog metadata and cover art, you can provide an optional Spotify Developer Client ID. (Never enter passwords).
+      </p>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <input type="text" class="input-text" id="spotify-client-id" placeholder="Spotify Client ID (Optional)">
+        <button class="btn-action" id="btn-save-spotify">Save Spotify Settings</button>
       </div>
     </div>
   </div>
 
-  <!-- Mini Player & Controls -->
-  <div class="section-title">🎵 Mini Player & Media Controls</div>
-  <div class="settings-group">
-    <div class="switch-row">
-      <div class="switch-row-desc">
-        <span>Show Mini Player Bar</span>
-        <span class="switch-desc">Displays track title, artist, progress bar & controls</span>
+  <!-- TAB 5: AI & LYRIC INSIGHTS -->
+  <div class="tab-content" id="tab-ai">
+    <div class="section-title">Current Song Insights (Offline Local Analysis)</div>
+    <div class="card-box" id="ai-insights-box">
+      <div style="font-size: 12px; color: rgba(255,255,255,0.6);" id="ai-status">Waiting for lyrics...</div>
+    </div>
+
+    <div class="section-title">Optional External AI Provider (Opt-In)</div>
+    <div class="card-box">
+      <p style="font-size: 11px; line-height: 1.5; color: rgba(255,255,255,0.6); margin-bottom: 10px;">
+        🔒 <b>Privacy Note:</b> By default, lyric analysis runs 100% offline on your device. If you optionally choose to connect an OpenAI-compatible API key below, lyrics will only be sent when you click "Analyze". Never share credentials.
+      </p>
+      <div class="switch-row" style="margin-bottom: 10px;">
+        <div class="switch-info">
+          <span class="switch-title">Enable External AI Provider</span>
+          <span class="switch-desc">Use custom OpenAI / Gemini API endpoint for deep meaning breakdown</span>
+        </div>
+        <input type="checkbox" class="switch-input" id="chk-ai-enable">
       </div>
-      <input type="checkbox" id="chk-mini-player" checked>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <input type="text" class="input-text" id="ai-endpoint" placeholder="API Endpoint (Default: https://api.openai.com/v1/chat/completions)">
+        <input type="password" class="input-text" id="ai-key" placeholder="API Key (sk-...)">
+        <button class="btn-action btn-primary" id="btn-save-ai">Save AI Preferences</button>
+      </div>
     </div>
   </div>
 
-  <!-- Window & Behavior -->
-  <div class="section-title">⚙️ Behavior & Shortcuts</div>
-  <div class="settings-group">
-    <div class="switch-row">
-      <div class="switch-row-desc">
-        <span>Always On Top</span>
-        <span class="switch-desc">Keep overlay visible above full-screen windows & games</span>
-      </div>
-      <input type="checkbox" id="chk-always-on-top">
-    </div>
-
-    <div class="switch-row">
-      <div class="switch-row-desc">
-        <span>Ghost Mode (Click-Through)</span>
-        <span class="switch-desc">Pass all mouse clicks through so lyrics won't be dragged accidentally</span>
-      </div>
-      <input type="checkbox" id="chk-click-through">
-    </div>
-
-    <div class="switch-row">
-      <div class="switch-row-desc">
-        <span>Run on Windows Startup</span>
-        <span class="switch-desc">Auto-start NeonLyrics when Windows boots</span>
-      </div>
-      <input type="checkbox" id="chk-startup" checked>
-    </div>
-
-    <div class="hotkey-list">
-      <div class="hotkey-item">
-        <span>Show / Hide Floating Lyrics</span>
-        <span class="kbd">Ctrl + Alt + L</span>
-      </div>
-      <div class="hotkey-item">
-        <span>Toggle Ghost Mode (Click-Through)</span>
-        <span class="kbd">Ctrl + Alt + O</span>
-      </div>
+  <!-- TAB 6: SHORTCUTS -->
+  <div class="tab-content" id="tab-hotkeys">
+    <div class="section-title">Global Hotkeys Cheatsheet</div>
+    <div class="card-box">
+      <table class="hotkey-table">
+        <tr>
+          <td><span class="hotkey-kbd">Ctrl + Alt + L</span></td>
+          <td>Toggle Show / Hide Floating Lyrics Overlay</td>
+        </tr>
+        <tr>
+          <td><span class="hotkey-kbd">Ctrl + Alt + O</span></td>
+          <td>Toggle Ghost Mode (Click-Through Pass-Through)</td>
+        </tr>
+        <tr>
+          <td><span class="hotkey-kbd">Ctrl + Alt + Space</span></td>
+          <td>Play / Pause Active Media Session</td>
+        </tr>
+        <tr>
+          <td><span class="hotkey-kbd">Ctrl + Alt + Right</span></td>
+          <td>Skip to Next Track</td>
+        </tr>
+        <tr>
+          <td><span class="hotkey-kbd">Ctrl + Alt + Left</span></td>
+          <td>Skip to Previous Track</td>
+        </tr>
+      </table>
     </div>
   </div>
 
   <script>
-    const { ipcRenderer } = require('electron');
+    const api = window.neonLyricsApi;
 
-    let config = {
-      theme: 'theme-cyber',
-      isCustomColor: false,
-      primaryColor: '#00f2fe',
-      secondaryColor: '#4facfe',
-      activeWordColor: '#ffffff',
-      sungWordColor: '#ffffff',
-      glowIntensity: 1.0,
-      fontScale: 1.0,
-      fontFamily: "'Outfit', sans-serif",
-      textAlign: 'center',
-      lineMode: 2,
-      syncOffset: 0.0,
-      backdropOpacity: 0.0,
-      backdropBlur: 16,
-      showMiniPlayer: true,
-      miniPlayerCollapsed: false,
-      isClickThrough: false,
-      alwaysOnTop: false,
-      autoStart: true
-    };
+    let config = {};
+    let currentFavorites = [];
+    let currentHistory = [];
+    let lastPlayback = null;
 
-    function loadSettings() {
+    // Tab Switching
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById(btn.dataset.tab).classList.add('active');
+
+        if (btn.dataset.tab === 'tab-ai' && lastPlayback) {
+          runLyricInsights(lastPlayback);
+        }
+      });
+    });
+
+    async function loadSettings() {
       try {
-        const saved = localStorage.getItem('neon_lyrics_config');
-        if (saved) config = { ...config, ...JSON.parse(saved) };
+        const state = await api.getInitialState();
+        if (state) {
+          config = state.config || {};
+          currentFavorites = state.favorites || [];
+          currentHistory = state.history || [];
+          lastPlayback = state.lastPlayback || null;
+        }
       } catch (e) {}
+
       applyUI();
+      renderFavorites();
+      renderHistory();
+      if (lastPlayback) runLyricInsights(lastPlayback);
     }
 
     function saveSettings() {
-      try {
-        localStorage.setItem('neon_lyrics_config', JSON.stringify(config));
-        ipcRenderer.send('config-updated', config);
-      } catch (e) {}
+      api.saveConfig(config);
     }
 
     function applyUI() {
-      // Themes
-      document.querySelectorAll('.palette-btn').forEach(b => {
-        b.classList.toggle('active', !config.isCustomColor && b.dataset.theme === config.theme);
+      // Palettes
+      document.querySelectorAll('.palette-btn').forEach(btn => {
+        btn.classList.toggle('active', !config.isCustomColor && btn.dataset.theme === config.theme);
       });
-      document.getElementById('picker-primary').value = config.primaryColor;
-      document.getElementById('picker-secondary').value = config.secondaryColor;
-      document.getElementById('picker-active-word').value = config.activeWordColor;
-      document.getElementById('picker-sung-word').value = config.sungWordColor;
 
-      // Font & Scaling
+      // Custom Color Pickers
+      document.getElementById('picker-primary').value = config.primaryColor || '#00f2fe';
+      document.getElementById('picker-secondary').value = config.secondaryColor || '#4facfe';
+      document.getElementById('picker-active-word').value = config.activeWordColor || '#ffffff';
+      document.getElementById('picker-sung-word').value = config.sungWordColor || '#ffffff';
+
+      // Typography
       document.getElementById('select-font').value = config.fontFamily || "'Outfit', sans-serif";
-      document.getElementById('slider-font').value = Math.round(config.fontScale * 100);
-      document.getElementById('font-val').textContent = `${Math.round(config.fontScale * 100)}%`;
+      const fontPct = Math.round((config.fontScale || 1.0) * 100);
+      document.getElementById('slider-font').value = fontPct;
+      document.getElementById('font-val').textContent = `${fontPct}%`;
 
-      document.getElementById('slider-glow').value = Math.round(config.glowIntensity * 100);
-      document.getElementById('glow-val').textContent = `${Math.round(config.glowIntensity * 100)}%`;
+      const glowPct = Math.round((config.glowIntensity || 1.0) * 100);
+      document.getElementById('slider-glow').value = glowPct;
+      document.getElementById('glow-val').textContent = `${glowPct}%`;
 
       // Segmented Controls
       document.querySelectorAll('#line-mode-wrap .seg-btn').forEach(b => {
@@ -571,9 +853,19 @@
 
       // Switches
       document.getElementById('chk-mini-player').checked = config.showMiniPlayer !== false;
-      document.getElementById('chk-always-on-top').checked = config.alwaysOnTop;
-      document.getElementById('chk-click-through').checked = config.isClickThrough;
-      document.getElementById('chk-startup').checked = config.autoStart;
+      document.getElementById('chk-always-on-top').checked = Boolean(config.alwaysOnTop);
+      document.getElementById('chk-click-through').checked = Boolean(config.isClickThrough);
+      document.getElementById('chk-startup').checked = config.autoStart !== false;
+
+      // Spotify & AI fields
+      if (config.spotify) {
+        document.getElementById('spotify-client-id').value = config.spotify.clientId || '';
+      }
+      if (config.ai) {
+        document.getElementById('chk-ai-enable').checked = Boolean(config.ai.enabled);
+        document.getElementById('ai-endpoint').value = config.ai.apiEndpoint || '';
+        document.getElementById('ai-key').value = config.ai.apiKey || '';
+      }
     }
 
     // Palette Clicks
@@ -674,26 +966,251 @@
     // Window Toggles
     document.getElementById('chk-always-on-top').addEventListener('change', (e) => {
       config.alwaysOnTop = e.target.checked;
-      ipcRenderer.send('toggle-always-on-top', config.alwaysOnTop);
+      api.toggleAlwaysOnTop(config.alwaysOnTop);
       saveSettings();
     });
 
     document.getElementById('chk-click-through').addEventListener('change', (e) => {
       config.isClickThrough = e.target.checked;
-      ipcRenderer.send('toggle-click-through', config.isClickThrough);
+      api.toggleClickThrough(config.isClickThrough);
       saveSettings();
     });
 
     document.getElementById('chk-startup').addEventListener('change', (e) => {
       config.autoStart = e.target.checked;
-      ipcRenderer.send('toggle-startup', config.autoStart);
+      api.toggleStartup(config.autoStart);
       saveSettings();
     });
 
-    ipcRenderer.on('click-through-toggled', (event, val) => {
+    api.onClickThroughToggled((val) => {
       config.isClickThrough = val;
       document.getElementById('chk-click-through').checked = val;
     });
+
+    // Search Alternative Lyrics
+    document.getElementById('btn-do-search').addEventListener('click', async () => {
+      const q = document.getElementById('input-search-query').value.trim();
+      const statusEl = document.getElementById('search-status');
+      const listEl = document.getElementById('search-results-list');
+      if (!q) return;
+
+      statusEl.textContent = 'Searching LRCLIB database...';
+      listEl.innerHTML = '';
+
+      try {
+        const results = await api.searchLyrics({ title: q, artist: '' });
+        if (!results || results.length === 0) {
+          statusEl.textContent = 'No lyric versions found for query.';
+          return;
+        }
+
+        statusEl.textContent = `Found ${results.length} version(s):`;
+        let html = '';
+        results.forEach((item, idx) => {
+          html += `
+            <div class="list-item">
+              <div class="list-info">
+                <div class="list-title">${escapeHtml(item.trackName)} <span class="tag-badge">${item.hasSynced ? 'Synced' : 'Plain'}</span></div>
+                <div class="list-sub">${escapeHtml(item.artistName)} - ${escapeHtml(item.albumName || 'Single')}</div>
+              </div>
+              <button class="btn-action btn-apply-candidate" data-idx="${idx}">Apply</button>
+            </div>
+          `;
+        });
+        listEl.innerHTML = html;
+
+        listEl.querySelectorAll('.btn-apply-candidate').forEach(b => {
+          b.addEventListener('click', async () => {
+            const chosen = results[parseInt(b.dataset.idx)];
+            b.textContent = 'Applying...';
+            const ok = await api.selectLyrics(chosen);
+            b.textContent = ok ? '✓ Applied' : 'Failed';
+          });
+        });
+      } catch (err) {
+        statusEl.textContent = 'Search failed: ' + err.message;
+      }
+    });
+
+    // Import / Export LRC
+    document.getElementById('btn-import-lrc').addEventListener('click', async () => {
+      const res = await api.importLrcFile();
+      if (res) {
+        alert(`Successfully imported lyrics from ${res.fileName}!`);
+      }
+    });
+
+    document.getElementById('btn-export-lrc').addEventListener('click', async () => {
+      if (!lastPlayback || !lastPlayback.lyrics || lastPlayback.lyrics.length === 0) {
+        alert('No lyrics are currently active to export.');
+        return;
+      }
+      let content = '';
+      lastPlayback.lyrics.forEach(l => {
+        const mm = String(Math.floor(l.time / 60)).padStart(2, '0');
+        const ss = (l.time % 60).toFixed(2).padStart(5, '0');
+        content += `[${mm}:${ss}] ${l.text}\n`;
+      });
+      const defaultName = `${lastPlayback.artist || 'Track'} - ${lastPlayback.title || 'Lyrics'}`;
+      const ok = await api.exportLrcFile(content, defaultName);
+      if (ok) alert('Lyrics exported successfully!');
+    });
+
+    // Favorites & History Rendering
+    function renderFavorites() {
+      const container = document.getElementById('favs-container');
+      if (!currentFavorites || currentFavorites.length === 0) {
+        container.innerHTML = '<div style="font-size: 12px; color: rgba(255,255,255,0.5);">No favorite songs saved yet.</div>';
+        return;
+      }
+
+      let html = '';
+      currentFavorites.forEach(f => {
+        html += `
+          <div class="list-item">
+            ${f.artwork ? `<img class="list-art" src="${f.artwork}" alt="Art"/>` : '<div class="list-art"></div>'}
+            <div class="list-info">
+              <div class="list-title">${escapeHtml(f.title)}</div>
+              <div class="list-sub">${escapeHtml(f.artist)}</div>
+            </div>
+            <button class="btn-action btn-rm-fav" data-id="${escapeHtml(f.id)}" style="font-size: 10px; padding: 4px 8px;">Remove</button>
+          </div>
+        `;
+      });
+      container.innerHTML = html;
+
+      container.querySelectorAll('.btn-rm-fav').forEach(b => {
+        b.addEventListener('click', async () => {
+          await api.removeFavorite(b.dataset.id);
+        });
+      });
+    }
+
+    function renderHistory() {
+      const container = document.getElementById('history-container');
+      if (!currentHistory || currentHistory.length === 0) {
+        container.innerHTML = '<div style="font-size: 12px; color: rgba(255,255,255,0.5);">History will appear as songs are played.</div>';
+        return;
+      }
+
+      let html = '';
+      currentHistory.slice(0, 30).forEach(h => {
+        html += `
+          <div class="list-item">
+            ${h.artwork ? `<img class="list-art" src="${h.artwork}" alt="Art"/>` : '<div class="list-art"></div>'}
+            <div class="list-info">
+              <div class="list-title">${escapeHtml(h.title)}</div>
+              <div class="list-sub">${escapeHtml(h.artist)}</div>
+            </div>
+            <span style="font-size: 10px; color: rgba(255,255,255,0.4);">${new Date(h.playedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+          </div>
+        `;
+      });
+      container.innerHTML = html;
+    }
+
+    document.getElementById('btn-clear-history').addEventListener('click', async () => {
+      await api.clearHistory();
+      currentHistory = [];
+      renderHistory();
+    });
+
+    api.onFavoritesUpdated((favs) => {
+      currentFavorites = favs;
+      renderFavorites();
+    });
+
+    api.onPlaybackData((data) => {
+      lastPlayback = data;
+      if (document.getElementById('input-search-query') && !document.getElementById('input-search-query').value && data.title) {
+        document.getElementById('input-search-query').value = `${data.artist || ''} ${data.title}`;
+      }
+    });
+
+    // Local & AI Insights
+    async function runLyricInsights(track) {
+      const box = document.getElementById('ai-insights-box');
+      if (!track || !track.lyrics || track.lyrics.length === 0) {
+        box.innerHTML = '<div style="font-size: 12px; color: rgba(255,255,255,0.5);">Play a song with lyrics to see insights.</div>';
+        return;
+      }
+
+      const lyricsText = track.lyrics.map(l => l.text).join('\n');
+      const metrics = await api.analyzeLyrics(lyricsText);
+      if (!metrics) return;
+
+      let html = `
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 12px;">
+          <div style="background: rgba(255,255,255,0.04); padding: 8px; border-radius: 8px;">
+            <div style="font-size: 10px; color: rgba(255,255,255,0.5);">Emotional Mood</div>
+            <div style="font-size: 12px; font-weight: 700; color: #00f2fe;">${escapeHtml(metrics.sentiment.label)}</div>
+          </div>
+          <div style="background: rgba(255,255,255,0.04); padding: 8px; border-radius: 8px;">
+            <div style="font-size: 10px; color: rgba(255,255,255,0.5);">Vocabulary Richness</div>
+            <div style="font-size: 12px; font-weight: 700; color: #fff;">${metrics.lexicalDiversity}%</div>
+          </div>
+          <div style="background: rgba(255,255,255,0.04); padding: 8px; border-radius: 8px;">
+            <div style="font-size: 10px; color: rgba(255,255,255,0.5);">Word Count</div>
+            <div style="font-size: 12px; font-weight: 700; color: #fff;">${metrics.wordCount} words</div>
+          </div>
+        </div>
+        <div style="font-size: 12px; margin-bottom: 6px;"><b>Detected Themes:</b> ${metrics.topThemes.map(t => `<span class="tag-badge" style="margin-right: 4px;">${escapeHtml(t)}</span>`).join('')}</div>
+        <div style="font-size: 12px; margin-bottom: 12px;"><b>Key Vocabulary:</b> ${metrics.topWords.map(w => `${escapeHtml(w.word)} (${w.count})`).join(', ')}</div>
+      `;
+
+      if (config.ai && config.ai.enabled) {
+        html += `
+          <button class="btn-action btn-primary" id="btn-deep-ai" style="margin-top: 8px;">✨ Run Deep AI Lyric Interpretation</button>
+          <div id="ai-deep-result" style="margin-top: 10px; font-size: 12px; line-height: 1.5; color: rgba(255,255,255,0.85);"></div>
+        `;
+      }
+
+      box.innerHTML = html;
+
+      const btnDeepAi = document.getElementById('btn-deep-ai');
+      if (btnDeepAi) {
+        btnDeepAi.addEventListener('click', async () => {
+          btnDeepAi.textContent = 'Analyzing...';
+          const deepResultEl = document.getElementById('ai-deep-result');
+          deepResultEl.textContent = 'Generating insights from AI provider...';
+          const res = await api.analyzeLyricsAI(lyricsText);
+          if (res.error) {
+            deepResultEl.textContent = 'Error: ' + res.error;
+            btnDeepAi.textContent = '✨ Run Deep AI Lyric Interpretation';
+          } else {
+            deepResultEl.innerHTML = `<b>AI Narrative Breakdown:</b><br>${escapeHtml(res.summary)}`;
+            btnDeepAi.textContent = '✓ Done';
+          }
+        });
+      }
+    }
+
+    // Save Spotify & AI Settings
+    document.getElementById('btn-save-spotify').addEventListener('click', () => {
+      config.spotify = config.spotify || {};
+      config.spotify.clientId = document.getElementById('spotify-client-id').value.trim();
+      saveSettings();
+      alert('Spotify configuration saved!');
+    });
+
+    document.getElementById('btn-save-ai').addEventListener('click', () => {
+      config.ai = config.ai || {};
+      config.ai.enabled = document.getElementById('chk-ai-enable').checked;
+      config.ai.apiEndpoint = document.getElementById('ai-endpoint').value.trim();
+      config.ai.apiKey = document.getElementById('ai-key').value.trim();
+      saveSettings();
+      alert('AI preferences saved!');
+    });
+
+    function escapeHtml(str) {
+      if (typeof str !== 'string') return '';
+      return str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
 
     loadSettings();
   </script>

@@ -479,3 +479,106 @@ body.is-playing .visualizer-bars span:nth-child(4) {
   pointer-events: none;
   transition: width 0.1s linear;
 }
+
+/* Album Artwork Container */
+.album-art-wrap {
+  width: 32px;
+  height: 32px;
+  border-radius: 7px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.player-art {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.player-art-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* Overlay Header Bar */
+.overlay-header-bar {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 4px 6px 4px;
+  opacity: 0.18;
+  transition: opacity 0.2s ease;
+}
+
+.lyrics-root:hover .overlay-header-bar {
+  opacity: 1;
+}
+
+.lyrics-badge {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  padding: 2px 7px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.lyrics-badge.active {
+  background: rgba(0, 242, 254, 0.15);
+  color: var(--glow-primary);
+  border-color: rgba(0, 242, 254, 0.3);
+}
+
+.lyrics-badge.warning {
+  background: rgba(234, 179, 8, 0.15);
+  color: #eab308;
+  border-color: rgba(234, 179, 8, 0.3);
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.icon-tool-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.7);
+  border-radius: 6px;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.icon-tool-btn:hover {
+  background: rgba(255, 255, 255, 0.18);
+  color: #fff;
+  transform: scale(1.08);
+}
+
+/* Instrumental Section */
+.word.instrumental {
+  font-style: italic;
+  font-size: 0.88em;
+  opacity: 0.8;
+  letter-spacing: 1px;
+}
+

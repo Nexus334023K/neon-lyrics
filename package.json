@@ -1,12 +1,13 @@
 {
   "name": "neon-lyrics-app",
   "productName": "NeonLyrics",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "Transparent & Blurred Floating Karaoke Lyrics Overlay for Windows",
   "author": "Nexus",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
+    "test": "node --test test/**/*.test.js",
     "build:py": "python -c \"import os; os.system('taskkill /F /IM media_worker.exe >nul 2>&1')\" && python -m PyInstaller --noconfirm --onedir --collect-all winsdk --distpath py_dist --workpath py_build media_worker.py",
     "dist": "electron-builder --win nsis",
     "build": "npm run build:py && npm run dist"
@@ -27,6 +28,7 @@
       "index.html",
       "settings.html",
       "styles.css",
+      "src/**/*",
       "build/**/*"
     ],
     "extraResources": [
