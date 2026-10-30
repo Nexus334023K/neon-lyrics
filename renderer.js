@@ -7,6 +7,8 @@ const api = window.neonLyricsApi || {
   onPlaybackData: () => () => {},
   onApplyConfig: () => () => {},
   onFavoritesUpdated: () => () => {},
+  onOverlayVisibility: () => () => {},
+  getDisplayRefreshRate: async () => null,
   sendMediaControl: () => {},
   saveConfig: () => {},
   toggleClickThrough: () => {},
@@ -23,9 +25,18 @@ let currentLineIdx = -1;
 let currentWordIdx = -1;
 let lastPlaybackState = null;
 let currentFavorites = [];
+let currentAlbumPalette = null;
+let currentArtworkUrl = '';
 
 let config = {
   theme: 'theme-cyber',
+  visualizationMode: 'ship',
+  autoSyncAlbumColors: true,
+  manualColors: {
+    primary: '#00f2fe',
+    secondary: '#4facfe',
+    activeWord: '#ffffff'
+  },
   isCustomColor: false,
   primaryColor: '#00f2fe',
   secondaryColor: '#4facfe',
@@ -39,12 +50,97 @@ let config = {
   syncOffset: 0.0,
   backdropOpacity: 0.0,
   backdropBlur: 16,
-  showMiniPlayer: true,
+  showMiniPlayer: false,
   miniPlayerCollapsed: false,
   isClickThrough: false,
   alwaysOnTop: false,
-  autoStart: true
+  autoStart: true,
+  animation: {
+    motionBlur: true,
+    motionBlurIntensity: 'medium',
+    targetFps: 'auto',
+    qualityPreset: 'smooth',
+    respectReducedMotion: true,
+    gpuFallback: true,
+    animationSpeed: 1.0,
+    transitionDuration: 0.28,
+    perspectiveDepth: 800
+  }
 };
+
+// Initialize Palette Extractor
+const PaletteExtractorClass = window.PaletteExtractor || class {
+  constructor() {}
+  async extractFromImageUrl() { return null; }
+};
+const paletteExtractor = new PaletteExtractorClass();
+
+// Initialize Motion Blur Engine & Frame Rate Scheduler
+const MotionEngineClass = window.MotionBlurEngine || class {
+  constructor() {
+    this.scheduler = {
+      start: () => {},
+      pause: () => {},
+      resume: () => {},
+      destroy: () => {},
+      setTargetFps: () => {},
+      setDisplayRefreshRate: () => {},
+      register: () => () => {}
+    };
+  }
+  applyConfig() {}
+  triggerTransition(opts) {
+    if (opts.pastEl) opts.pastEl.textContent = opts.pastContent || '';
+    if (opts.activeEl) opts.activeEl.innerHTML = opts.activeContent || '';
+    if (opts.nextLineEl) opts.nextLineEl.textContent = opts.nextContent || '';
+  }
+  isReducedMotionPreferred() { return false; }
+  resume() {}
+  pause() {}
+  destroy() {}
+};
+
+const motionEngine = new MotionEngineClass({
+  motionBlur: config.animation?.motionBlur ?? true,
+  motionBlurIntensity: config.animation?.motionBlurIntensity || 'medium',
+  targetFps: config.animation?.targetFps || 'auto',
+  qualityPreset: config.animation?.qualityPreset || 'smooth',
+  respectReducedMotion: config.animation?.respectReducedMotion !== false,
+  gpuFallback: config.animation?.gpuFallback !== false,
+  animationSpeed: config.animation?.animationSpeed || 1.0,
+  transitionDuration: config.animation?.transitionDuration || 0.28,
+  perspectiveDepth: config.animation?.perspectiveDepth || 800,
+  visualizationMode: config.visualizationMode || 'ship'
+});
+
+const scheduler = motionEngine.scheduler;
+if (scheduler && typeof scheduler.start === 'function') {
+  scheduler.start();
+}
+
+// Word Transition Controller
+const WordControllerClass = window.WordTransitionController || class {
+  constructor() {}
+  applyConfig() {}
+  onWordChange() {}
+  seekReconcile() {}
+  destroy() {}
+};
+const wordTransitionController = new WordControllerClass(config.wordTransitions);
+
+// Line Transition Controller
+const LineControllerClass = window.LineTransitionController || class {
+  constructor() {}
+  applyConfig() {}
+  triggerTransition(opts) {
+    if (opts.pastEl) opts.pastEl.textContent = opts.pastContent || '';
+    if (opts.activeEl) opts.activeEl.innerHTML = opts.activeContent || '';
+    if (opts.nextLineEl) opts.nextLineEl.textContent = opts.nextContent || '';
+  }
+  settleLines() {}
+  destroy() {}
+};
+const lineTransitionController = new LineControllerClass(config.lineTransitions);
 
 const pastLineEl = document.getElementById('past-line');
 const activeLineEl = document.getElementById('active-line');
@@ -88,14 +184,27 @@ function escapeHtml(str) {
 }
 
 function applyConfig() {
-  if (config.isCustomColor) {
-    document.body.className = `mode-${config.lineMode || 2}`;
-    document.documentElement.style.setProperty('--glow-primary', config.primaryColor);
-    document.documentElement.style.setProperty('--glow-secondary', config.secondaryColor);
-    document.documentElement.style.setProperty('--word-active', config.activeWordColor);
-    document.documentElement.style.setProperty('--word-sung', config.sungWordColor);
+  const visMode = config.visualizationMode || 'ship';
+  const lineModeClass = `mode-${config.lineMode || 2}`;
+  const visModeClass = `mode-vis-${visMode}`;
+
+  if (config.autoSyncAlbumColors && currentAlbumPalette) {
+    document.body.className = `${lineModeClass} ${visModeClass}`;
+    document.documentElement.style.setProperty('--glow-primary', currentAlbumPalette.primary);
+    document.documentElement.style.setProperty('--glow-secondary', currentAlbumPalette.secondary);
+    document.documentElement.style.setProperty('--word-active', currentAlbumPalette.activeWord);
+    document.documentElement.style.setProperty('--word-sung', currentAlbumPalette.activeWord);
+  } else if (config.isCustomColor) {
+    document.body.className = `${lineModeClass} ${visModeClass}`;
+    const pColor = config.manualColors?.primary || config.primaryColor || '#00f2fe';
+    const sColor = config.manualColors?.secondary || config.secondaryColor || '#4facfe';
+    const aWord = config.manualColors?.activeWord || config.activeWordColor || '#ffffff';
+    document.documentElement.style.setProperty('--glow-primary', pColor);
+    document.documentElement.style.setProperty('--glow-secondary', sColor);
+    document.documentElement.style.setProperty('--word-active', aWord);
+    document.documentElement.style.setProperty('--word-sung', config.sungWordColor || aWord);
   } else {
-    document.body.className = `${config.theme || 'theme-cyber'} mode-${config.lineMode || 2}`;
+    document.body.className = `${config.theme || 'theme-cyber'} ${lineModeClass} ${visModeClass}`;
     document.documentElement.style.removeProperty('--glow-primary');
     document.documentElement.style.removeProperty('--glow-secondary');
     document.documentElement.style.removeProperty('--word-active');
@@ -110,18 +219,64 @@ function applyConfig() {
 
   document.documentElement.style.setProperty('--font-scale', config.fontScale ?? 1.0);
   document.documentElement.style.setProperty('--glow-intensity', config.glowIntensity ?? 1.0);
-  document.documentElement.style.setProperty('--font-family', config.fontFamily || "'Outfit', sans-serif");
+  
+  // Typography Engine variables
+  const typo = config.typography || {};
+  const baseFont = typo.fontFamily || config.fontFamily || "'Outfit', sans-serif";
+  document.documentElement.style.setProperty('--font-family', baseFont);
+  document.documentElement.style.setProperty('--font-weight', typo.fontWeight || '700');
+  document.documentElement.style.setProperty('--letter-spacing', typo.letterSpacing !== undefined ? `${typo.letterSpacing}px` : '0px');
+  document.documentElement.style.setProperty('--line-height', typo.lineHeight || 1.35);
+  document.documentElement.style.setProperty('--word-spacing', typo.wordSpacing !== undefined ? `${typo.wordSpacing}px` : '0px');
+  document.documentElement.style.setProperty('--active-word-font', typo.activeWordFont || baseFont);
+  document.documentElement.style.setProperty('--sung-word-font', typo.sungWordFont || baseFont);
+  document.documentElement.style.setProperty('--upcoming-word-font', typo.upcomingWordFont || baseFont);
+  document.documentElement.style.setProperty('--prev-line-font', typo.prevLineFont || baseFont);
+  document.documentElement.style.setProperty('--active-line-font', typo.activeLineFont || baseFont);
+  document.documentElement.style.setProperty('--next-line-font', typo.nextLineFont || baseFont);
+
+  document.documentElement.style.setProperty('--perspective-depth', (config.animation?.perspectiveDepth || 800) + 'px');
 
   document.documentElement.style.setProperty('--backdrop-opacity', config.backdropOpacity ?? 0.0);
   document.documentElement.style.setProperty('--backdrop-blur', (config.backdropBlur ?? 16) + 'px');
 
   if (stageEl) {
-    stageEl.className = 'stage align-' + (config.textAlign || 'center');
+    stageEl.className = `stage align-${config.textAlign || 'center'} mode-vis-${visMode}`;
   }
 
   if (miniPlayerEl) {
     miniPlayerEl.classList.toggle('hidden', !config.showMiniPlayer);
     miniPlayerEl.classList.toggle('collapsed', Boolean(config.miniPlayerCollapsed));
+  }
+
+  // Motion Blur & Animation Engine Config
+  if (config.animation) {
+    motionEngine.applyConfig({
+      ...config.animation,
+      visualizationMode: visMode
+    });
+    const reduced = config.animation.respectReducedMotion && motionEngine.isReducedMotionPreferred();
+    document.body.classList.toggle('reduced-motion-active', Boolean(reduced));
+  }
+
+  if (config.wordTransitions) {
+    wordTransitionController.applyConfig(config.wordTransitions);
+  }
+
+  if (config.lineTransitions) {
+    lineTransitionController.applyConfig(config.lineTransitions);
+  }
+
+  // Wallpaper Mode desktop integration
+  const WallpaperModeClass = window.WallpaperMode || (typeof WallpaperMode !== 'undefined' ? WallpaperMode : null);
+  if (WallpaperModeClass) {
+    if (!window.wallpaperModeInstance) {
+      window.wallpaperModeInstance = new WallpaperModeClass(config.wallpaperMode || {});
+      window.wallpaperModeInstance.attach(document.body, miniPlayerEl);
+    } else {
+      window.wallpaperModeInstance.updateConfig(config.wallpaperMode || {});
+    }
+    document.body.classList.toggle('wallpaper-mode', Boolean(config.wallpaperMode?.enabled));
   }
 }
 
@@ -160,14 +315,31 @@ function updatePlayback(data) {
     playerArtistEl.textContent = 'Spotify / Windows Media';
   }
 
-  // Artwork
+  // Artwork & Reactive Color Extraction
   if (data.artwork) {
     playerArtEl.src = data.artwork;
     playerArtEl.style.display = 'block';
     playerArtPlaceholder.style.display = 'none';
+
+    if (data.artwork !== currentArtworkUrl) {
+      currentArtworkUrl = data.artwork;
+      if (config.autoSyncAlbumColors !== false) {
+        paletteExtractor.extractFromImageUrl(data.artwork, trackId).then((pal) => {
+          if (pal && currentArtworkUrl === data.artwork) {
+            currentAlbumPalette = pal;
+            applyConfig();
+          }
+        }).catch(() => {});
+      }
+    }
   } else {
     playerArtEl.style.display = 'none';
     playerArtPlaceholder.style.display = 'flex';
+    if (currentArtworkUrl !== '') {
+      currentArtworkUrl = '';
+      currentAlbumPalette = null;
+      applyConfig();
+    }
   }
 
   updateFavoriteButton(data);
@@ -262,40 +434,83 @@ function syncLyrics(pos) {
       pastLineEl.textContent = '';
       activeLineEl.innerHTML = `<span class="word upcoming">...</span>`;
       nextLineEl.textContent = lyrics[0] ? lyrics[0].text : '';
+      pastLineEl.className = 'line past-line line-settled';
+      activeLineEl.className = 'line active-line line-settled';
+      nextLineEl.className = 'line next-line line-settled';
     }
     return;
   }
 
   if (activeIdx !== currentLineIdx) {
+    const isFirstLoad = currentLineIdx === -1;
+    const direction = activeIdx > currentLineIdx ? 'forward' : 'backward';
+    const isLargeSeek = Math.abs(activeIdx - currentLineIdx) > 3;
     currentLineIdx = activeIdx;
     currentWordIdx = -1;
 
-    // Past line
-    if (currentLineIdx > 0 && lyrics[currentLineIdx - 1]) {
-      pastLineEl.textContent = lyrics[currentLineIdx - 1].text || '';
-    } else {
-      pastLineEl.textContent = '';
-    }
+    // Past line content
+    const pastText = (currentLineIdx > 0 && lyrics[currentLineIdx - 1])
+      ? lyrics[currentLineIdx - 1].text || ''
+      : '';
 
-    // Active line
+    // Active line content
     const line = lyrics[currentLineIdx];
+    let activeHtml = '';
     if (line.isInstrumental) {
-      activeLineEl.innerHTML = `<span class="word active instrumental">♪ Instrumental Interlude ♪</span>`;
+      activeHtml = `<span class="word active instrumental">♪ Instrumental Interlude ♪</span>`;
     } else if (Array.isArray(line.words) && line.words.length > 0) {
       let html = '';
       line.words.forEach((w, idx) => {
-        html += `<span class="word upcoming" id="w-${idx}">${escapeHtml(w.word)}</span> `;
+        html += `<span class="word upcoming word-token" id="w-${idx}">${escapeHtml(w.word)}</span> `;
       });
-      activeLineEl.innerHTML = html;
+      activeHtml = html;
     } else {
-      activeLineEl.innerHTML = `<span class="word active">${escapeHtml(line.text)}</span>`;
+      activeHtml = `<span class="word active word-token">${escapeHtml(line.text)}</span>`;
     }
 
-    // Next line
-    if (currentLineIdx + 1 < lyrics.length) {
-      nextLineEl.textContent = lyrics[currentLineIdx + 1].text || '';
+    // Next line content
+    const nextText = (currentLineIdx + 1 < lyrics.length)
+      ? lyrics[currentLineIdx + 1].text || ''
+      : '';
+
+    if (isFirstLoad || isLargeSeek) {
+      wordTransitionController.seekReconcile();
+      lineTransitionController.triggerTransition({
+        pastEl: pastLineEl,
+        activeEl: activeLineEl,
+        nextLineEl: nextLineEl,
+        pastContent: pastText,
+        activeContent: activeHtml,
+        nextContent: nextText,
+        direction,
+        isSeek: true
+      });
+      pastLineEl.className = 'line past-line line-settled';
+      activeLineEl.className = 'line active-line line-settled';
+      nextLineEl.className = 'line next-line line-settled';
     } else {
-      nextLineEl.textContent = '';
+      lineTransitionController.triggerTransition({
+        pastEl: pastLineEl,
+        activeEl: activeLineEl,
+        nextLineEl: nextLineEl,
+        pastContent: pastText,
+        activeContent: activeHtml,
+        nextContent: nextText,
+        direction,
+        duration: config.lineTransitions?.duration || 450,
+        isSeek: false
+      });
+      motionEngine.triggerTransition({
+        pastEl: pastLineEl,
+        activeEl: activeLineEl,
+        nextLineEl: nextLineEl,
+        pastContent: pastText,
+        activeContent: activeHtml,
+        nextContent: nextText,
+        direction,
+        visualizationMode: config.visualizationMode || 'ship',
+        duration: config.animation?.transitionDuration || 0.28
+      });
     }
   }
 
@@ -314,9 +529,10 @@ function syncLyrics(pos) {
       line.words.forEach((_, idx) => {
         const el = document.getElementById(`w-${idx}`);
         if (el) {
-          el.className = 'word ' + (idx < wordIdx ? 'sung' : (idx === wordIdx ? 'active' : 'upcoming'));
+          el.className = 'word word-token ' + (idx < wordIdx ? 'sung' : (idx === wordIdx ? 'active' : 'upcoming'));
         }
       });
+      wordTransitionController.onWordChange(currentLineIdx, wordIdx, activeLineEl);
     }
   }
 }
@@ -378,6 +594,12 @@ btnQuickSearch?.addEventListener('click', (e) => {
   api.openSettingsWindow();
 });
 
+// Allow right-clicking anywhere on the overlay to open settings since header buttons are hidden
+window.addEventListener('contextmenu', (e) => {
+  e.preventDefault();
+  api.openSettingsWindow();
+});
+
 // Setup IPC Listeners
 api.onPlaybackData((data) => {
   updatePlayback(data);
@@ -405,7 +627,69 @@ async function init() {
       if (state.lastPlayback) updatePlayback(state.lastPlayback);
     }
   } catch (err) {}
+
+  // Query display refresh rate for Auto mode pacing
+  try {
+    const refreshHz = await api.getDisplayRefreshRate();
+    if (refreshHz && scheduler) {
+      scheduler.setDisplayRefreshRate(refreshHz);
+    }
+  } catch (err) {}
+
+  // Pause/resume animation loop on overlay window visibility change (saves GPU/CPU)
+  api.onOverlayVisibility((visible) => {
+    if (visible) {
+      motionEngine.resume();
+    } else {
+      motionEngine.pause();
+    }
+  });
+
+  // Pause/resume animation loop on document visibility change
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      motionEngine.pause();
+    } else {
+      motionEngine.resume();
+    }
+  });
+
+  // Mini player progress smooth interpolation using delta time
+  scheduler.register('mini-player-progress', (dt) => {
+    if (!lastPlaybackState || lastPlaybackState.state !== 'playing' || !lastPlaybackState.duration) return;
+    lastPlaybackState.position += dt;
+    if (lastPlaybackState.position > lastPlaybackState.duration) {
+      lastPlaybackState.position = lastPlaybackState.duration;
+    }
+    const pct = Math.min(100, Math.max(0, (lastPlaybackState.position / lastPlaybackState.duration) * 100));
+    if (progressFill) progressFill.style.width = pct.toFixed(1) + '%';
+    if (timeCurrentEl) timeCurrentEl.textContent = formatTime(lastPlaybackState.position);
+  });
+
+  // Cleanup on unload
+  window.addEventListener('beforeunload', () => {
+    motionEngine.destroy();
+  });
+
+  await loadCustomFontFaceRules();
   applyConfig();
+}
+
+async function loadCustomFontFaceRules() {
+  if (typeof api !== 'undefined' && typeof api.getFontFaceCss === 'function') {
+    try {
+      const css = await api.getFontFaceCss();
+      if (css) {
+        let styleTag = document.getElementById('custom-fonts-style');
+        if (!styleTag) {
+          styleTag = document.createElement('style');
+          styleTag.id = 'custom-fonts-style';
+          document.head.appendChild(styleTag);
+        }
+        styleTag.textContent = css;
+      }
+    } catch (e) {}
+  }
 }
 
 init();

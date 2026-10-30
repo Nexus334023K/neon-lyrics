@@ -2,17 +2,27 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>NeonLyrics v3 - Customization Studio</title>
+  <title>NeonLyrics — Verci Customization Studio</title>
+  <script src="src/presets/glowPresets.js"></script>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700;800&display=swap');
 
     :root {
-      --accent: #00f2fe;
-      --accent-grad: linear-gradient(135deg, #00f2fe, #4facfe);
-      --bg: #0b0f19;
-      --card-bg: rgba(255, 255, 255, 0.04);
+      --accent: #ff2a85;
+      --accent-secondary: #8b5cf6;
+      --accent-cyan: #00f2fe;
+      --accent-grad: linear-gradient(135deg, #ff2a85, #a855f7);
+      --accent-glow: rgba(255, 42, 133, 0.35);
+      --bg: #07070a;
+      --bg-surface: #0e0e14;
+      --card-bg: rgba(255, 255, 255, 0.032);
+      --card-hover: rgba(255, 255, 255, 0.055);
       --card-border: rgba(255, 255, 255, 0.08);
-      --tab-active: rgba(0, 242, 254, 0.15);
+      --card-border-active: #ff2a85;
+      --tab-active: rgba(255, 42, 133, 0.16);
+      --text-main: #f8fafc;
+      --text-muted: rgba(255, 255, 255, 0.6);
+      --radius: 12px;
     }
 
     * {
@@ -24,13 +34,14 @@
 
     body {
       background: var(--bg);
-      color: #fff;
-      font-family: 'Outfit', 'Inter', system-ui, sans-serif;
-      padding: 18px;
+      color: var(--text-main);
+      font-family: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      padding: 18px 20px;
       height: 100vh;
       display: flex;
       flex-direction: column;
       overflow: hidden;
+      letter-spacing: -0.15px;
     }
 
     /* Custom Scrollbars */
@@ -38,11 +49,14 @@
       width: 6px;
     }
     ::-webkit-scrollbar-track {
-      background: rgba(0, 0, 0, 0.2);
+      background: rgba(0, 0, 0, 0.25);
     }
     ::-webkit-scrollbar-thumb {
       background: rgba(255, 255, 255, 0.18);
       border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 42, 133, 0.4);
     }
 
     /* Header */
@@ -50,9 +64,15 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding-bottom: 12px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 14px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
       flex-shrink: 0;
+    }
+
+    .title-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
 
     .title {
@@ -60,28 +80,35 @@
       font-weight: 800;
       display: flex;
       align-items: center;
-      gap: 10px;
-      background: linear-gradient(135deg, #00f2fe, #a855f7);
+      gap: 8px;
+      background: linear-gradient(135deg, #ff2a85, #d946ef 50%, #00f2fe 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
 
     .badge-v {
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 700;
-      background: rgba(0, 242, 254, 0.18);
-      color: #00f2fe;
+      background: rgba(255, 42, 133, 0.16);
+      color: #ff2a85;
       padding: 3px 8px;
-      border-radius: 12px;
-      border: 1px solid rgba(0, 242, 254, 0.3);
-      -webkit-text-fill-color: #00f2fe;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 42, 133, 0.35);
+      -webkit-text-fill-color: #ff2a85;
+      letter-spacing: 0.5px;
+    }
+
+    .header-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 500;
     }
 
     /* Tabs Bar */
     .tabs-bar {
       display: flex;
       gap: 6px;
-      background: rgba(255, 255, 255, 0.03);
+      background: rgba(255, 255, 255, 0.025);
       padding: 4px;
       border-radius: 10px;
       border: 1px solid var(--card-border);
@@ -91,7 +118,7 @@
     }
 
     .tab-btn {
-      padding: 8px 14px;
+      padding: 8px 13px;
       background: transparent;
       border: none;
       color: rgba(255, 255, 255, 0.65);
@@ -102,26 +129,27 @@
       display: flex;
       align-items: center;
       gap: 6px;
-      transition: all 0.15s ease;
+      transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
       white-space: nowrap;
     }
 
     .tab-btn:hover {
       color: #fff;
-      background: rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.07);
     }
 
     .tab-btn.active {
-      color: #00f2fe;
+      color: #fff;
       background: var(--tab-active);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+      border: 1px solid rgba(255, 42, 133, 0.3);
+      box-shadow: 0 2px 10px rgba(255, 42, 133, 0.15);
     }
 
     /* Tab Content Area */
     .tab-content {
       flex: 1;
       overflow-y: auto;
-      padding-right: 4px;
+      padding-right: 6px;
       display: none;
     }
 
@@ -134,7 +162,7 @@
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.9px;
-      color: rgba(255, 255, 255, 0.55);
+      color: rgba(255, 255, 255, 0.52);
       margin-bottom: 10px;
       margin-top: 18px;
       display: flex;
@@ -145,6 +173,437 @@
       margin-top: 0;
     }
 
+    /* Card Box */
+    .card-box {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      margin-bottom: 12px;
+      transition: all 0.2s ease;
+    }
+
+    /* --- VISUALIZATION CARDS GRID --- */
+    .vis-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .vis-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 14px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .vis-card:hover {
+      background: var(--card-hover);
+      border-color: rgba(255, 255, 255, 0.18);
+      transform: translateY(-2px);
+    }
+
+    .vis-card.active {
+      border-color: var(--card-border-active);
+      background: rgba(255, 42, 133, 0.05);
+      box-shadow: 0 0 20px rgba(255, 42, 133, 0.2), inset 0 0 12px rgba(255, 42, 133, 0.05);
+    }
+
+    .vis-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .vis-card-badge {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: rgba(255, 255, 255, 0.65);
+      background: rgba(255, 255, 255, 0.06);
+      padding: 3px 8px;
+      border-radius: 6px;
+    }
+    .vis-card.active .vis-card-badge {
+      color: var(--accent);
+      background: rgba(255, 42, 133, 0.15);
+      border: 1px solid rgba(255, 42, 133, 0.3);
+    }
+
+    .vis-card-check {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      color: transparent;
+      transition: all 0.2s ease;
+    }
+    .vis-card.active .vis-card-check {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+      box-shadow: 0 0 8px var(--accent-glow);
+    }
+
+    /* Mini Live Previews in Cards */
+    .vis-card-preview {
+      height: 74px;
+      background: rgba(0, 0, 0, 0.45);
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      margin-bottom: 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 6px;
+      overflow: hidden;
+      font-family: 'Outfit', sans-serif;
+    }
+
+    .prev-line {
+      white-space: nowrap;
+      text-align: center;
+      line-height: 1.25;
+      transition: all 0.25s ease;
+    }
+    .prev-past {
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.35);
+    }
+    .prev-active {
+      font-size: 14px;
+      font-weight: 800;
+      color: #fff;
+    }
+    .prev-next {
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.45);
+    }
+
+    /* Mode-Specific Preview Staging */
+    .preview-ship {
+      perspective: 400px;
+    }
+    .preview-ship .prev-past {
+      transform: perspective(400px) rotateX(16deg) translateZ(-16px);
+      opacity: 0.4;
+    }
+    .preview-ship .prev-active {
+      transform: perspective(400px) translateZ(8px);
+      color: #ff2a85;
+      text-shadow: 0 0 8px rgba(255, 42, 133, 0.8);
+    }
+    .preview-ship .prev-next {
+      transform: perspective(400px) rotateX(-16deg) translateZ(-14px);
+      opacity: 0.55;
+    }
+
+    .preview-fisheye .prev-active {
+      transform: scale(1.18);
+      color: #00f2fe;
+      text-shadow: 0 0 10px rgba(0, 242, 254, 0.8);
+      font-weight: 900;
+    }
+    .preview-fisheye .prev-past,
+    .preview-fisheye .prev-next {
+      transform: scale(0.85);
+      opacity: 0.4;
+    }
+
+    .preview-fisheye-visual .prev-active {
+      transform: scale(1.18);
+      color: #a855f7;
+      text-shadow: 0 0 10px rgba(168, 85, 247, 0.8);
+      font-weight: 900;
+    }
+    .preview-fisheye-visual .glyph-star {
+      color: #ff2a85;
+      font-size: 11px;
+      margin: 0 3px;
+      display: inline-block;
+      animation: visual-glyph-pulse 2s ease-in-out infinite alternate;
+    }
+
+    .preview-clean .prev-active {
+      color: #ffffff;
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9);
+      font-weight: 700;
+    }
+
+    .vis-card-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+    .vis-card.active .vis-card-title {
+      color: var(--accent);
+    }
+
+    .vis-card-desc {
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+
+    /* Color Swatches Grid */
+    .color-swatches-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .swatch-card {
+      background: rgba(255, 255, 255, 0.025);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .swatch-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.75);
+    }
+
+    .swatch-preview-box {
+      width: 100%;
+      height: 38px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+      transition: all 0.2s ease;
+    }
+
+    .swatch-input-wrap {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .swatch-color-picker {
+      width: 32px;
+      height: 32px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 6px;
+      background: transparent;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .swatch-hex-text {
+      flex: 1;
+      height: 32px;
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      color: #fff;
+      padding: 0 8px;
+      font-size: 11px;
+      font-family: monospace;
+      text-transform: uppercase;
+    }
+
+    /* Live Typography Preview Pill */
+    .typography-preview-pill {
+      background: rgba(0, 0, 0, 0.55);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      padding: 16px;
+      text-align: center;
+      margin-bottom: 12px;
+    }
+
+    .pill-line {
+      line-height: 1.4;
+      font-family: 'Outfit', sans-serif;
+    }
+    .pill-past {
+      font-size: 13px;
+      opacity: 0.45;
+    }
+    .pill-active {
+      font-size: 20px;
+      font-weight: 800;
+      margin: 4px 0;
+    }
+    .pill-next {
+      font-size: 13px;
+      opacity: 0.55;
+    }
+
+    /* Buttons */
+    .btn-action {
+      padding: 8px 14px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+    .btn-action:hover {
+      background: rgba(255, 255, 255, 0.14);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+    .btn-action.btn-primary {
+      background: var(--accent-grad);
+      border-color: transparent;
+      color: #fff;
+      box-shadow: 0 4px 14px var(--accent-glow);
+    }
+    .btn-action.btn-primary:hover {
+      opacity: 0.92;
+      transform: translateY(-1px);
+    }
+
+    /* Switch Rows */
+    .switch-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 11px 14px;
+      background: var(--card-bg);
+      border-radius: 10px;
+      border: 1px solid var(--card-border);
+      margin-bottom: 8px;
+    }
+    .switch-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .switch-title {
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .switch-desc {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+    .switch-input {
+      width: 38px;
+      height: 20px;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+
+    /* Sliders */
+    .slider-row {
+      background: var(--card-bg);
+      border-radius: 10px;
+      border: 1px solid var(--card-border);
+      padding: 10px 14px;
+      margin-bottom: 8px;
+    }
+    .slider-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .slider-val {
+      color: var(--accent);
+      font-weight: 700;
+      font-family: monospace;
+      font-size: 12px;
+    }
+    input[type="range"] {
+      width: 100%;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 2px;
+      outline: none;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+
+    /* Segmented Controls */
+    .segmented-wrap {
+      display: flex;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+      padding: 3px;
+      gap: 4px;
+      border: 1px solid var(--card-border);
+    }
+    .seg-btn {
+      flex: 1;
+      padding: 7px 11px;
+      background: transparent;
+      border: none;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 12px;
+      font-weight: 600;
+      border-radius: 7px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .seg-btn:hover {
+      color: #fff;
+    }
+    .seg-btn.active {
+      background: rgba(255, 255, 255, 0.16);
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+    .seg-btn.active-pink {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 0 10px var(--accent-glow);
+    }
+
+    /* Select Dropdown */
+    .select-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 14px;
+      background: var(--card-bg);
+      border-radius: 10px;
+      border: 1px solid var(--card-border);
+      margin-bottom: 8px;
+    }
+    .select-row label {
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .custom-select {
+      background: #12121a;
+      color: #fff;
+      border: 1px solid var(--card-border);
+      border-radius: 7px;
+      padding: 6px 10px;
+      font-size: 12px;
+      outline: none;
+      cursor: pointer;
+    }
+
     /* Palette Grid */
     .palette-grid {
       display: grid;
@@ -152,7 +611,6 @@
       gap: 8px;
       margin-bottom: 14px;
     }
-
     .palette-btn {
       height: 38px;
       border: 2px solid transparent;
@@ -173,234 +631,57 @@
       box-shadow: 0 0 14px rgba(255, 255, 255, 0.7);
     }
 
-    /* Color Pickers */
-    .color-pickers-row {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 8px;
-      margin-bottom: 14px;
-    }
-
-    .picker-item {
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-    }
-    .picker-item label {
-      font-size: 11px;
-      font-weight: 600;
-      color: rgba(255, 255, 255, 0.75);
-    }
-    .picker-item input[type="color"] {
-      width: 100%;
-      height: 36px;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 8px;
-      background: transparent;
-      cursor: pointer;
-    }
-
-    /* Segmented Controls */
-    .segmented-wrap {
-      display: flex;
-      background: rgba(255, 255, 255, 0.06);
-      border-radius: 10px;
-      padding: 3px;
-      gap: 4px;
-      border: 1px solid var(--card-border);
-    }
-    .seg-btn {
-      flex: 1;
-      padding: 7px 12px;
-      background: transparent;
-      border: none;
-      color: rgba(255, 255, 255, 0.7);
-      font-size: 12px;
-      font-weight: 600;
-      border-radius: 7px;
-      cursor: pointer;
-      transition: all 0.15s ease;
-    }
-    .seg-btn:hover {
-      color: #fff;
-    }
-    .seg-btn.active {
-      background: rgba(255, 255, 255, 0.16);
-      color: #fff;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-    }
-
-    /* Select Dropdown */
-    .select-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 9px 12px;
-      background: var(--card-bg);
-      border-radius: 10px;
-      border: 1px solid var(--card-border);
-      margin-bottom: 8px;
-    }
-    .select-row label {
-      font-size: 13px;
-      font-weight: 600;
-    }
-    .custom-select {
-      background: rgba(20, 26, 42, 0.9);
-      color: #fff;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 8px;
-      padding: 6px 12px;
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      outline: none;
-    }
-
-    /* Sliders */
-    .slider-row {
-      padding: 10px 14px;
-      background: var(--card-bg);
-      border-radius: 10px;
-      border: 1px solid var(--card-border);
-      margin-bottom: 8px;
-    }
-    .slider-header {
-      display: flex;
-      justify-content: space-between;
-      font-size: 12px;
-      font-weight: 600;
-      margin-bottom: 7px;
-    }
-    .slider-val {
+    .tag-badge {
+      font-size: 10px;
+      padding: 2px 7px;
+      border-radius: 5px;
+      background: rgba(255, 42, 133, 0.15);
       color: var(--accent);
-      font-family: monospace;
+      border: 1px solid rgba(255, 42, 133, 0.3);
+      font-weight: 600;
     }
-    input[type="range"] {
+
+    .hotkey-table {
       width: 100%;
-      height: 5px;
-      accent-color: var(--accent);
-      cursor: pointer;
-    }
-
-    /* Toggle Switches */
-    .switch-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px 14px;
-      background: var(--card-bg);
-      border-radius: 10px;
-      border: 1px solid var(--card-border);
-      margin-bottom: 8px;
-    }
-    .switch-info {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-    .switch-title {
-      font-size: 13px;
-      font-weight: 600;
-    }
-    .switch-desc {
-      font-size: 11px;
-      color: rgba(255, 255, 255, 0.5);
-    }
-    .switch-input {
-      appearance: none;
-      width: 40px;
-      height: 22px;
-      background: rgba(255, 255, 255, 0.18);
-      border-radius: 20px;
-      position: relative;
-      cursor: pointer;
-      outline: none;
-      transition: background 0.2s ease;
-    }
-    .switch-input:checked {
-      background: var(--accent);
-    }
-    .switch-input::after {
-      content: '';
-      position: absolute;
-      top: 2px;
-      left: 2px;
-      width: 18px;
-      height: 18px;
-      background: #fff;
-      border-radius: 50%;
-      transition: transform 0.2s ease;
-    }
-    .switch-input:checked::after {
-      transform: translateX(18px);
-    }
-
-    /* Buttons & Inputs */
-    .btn-action {
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid var(--card-border);
-      color: #fff;
-      padding: 8px 14px;
+      border-collapse: collapse;
       font-size: 12px;
-      font-weight: 600;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: all 0.15s ease;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
     }
-    .btn-action:hover {
-      background: rgba(255, 255, 255, 0.16);
-      border-color: #fff;
+    .hotkey-table td {
+      padding: 9px 8px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
     }
-    .btn-primary {
-      background: linear-gradient(135deg, #00f2fe, #4facfe);
-      color: #0b0f19;
-      font-weight: 700;
-      border: none;
-    }
-    .btn-primary:hover {
-      opacity: 0.9;
-      transform: translateY(-1px);
+    .hotkey-kbd {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 4px 8px;
+      border-radius: 5px;
+      font-family: monospace;
+      font-weight: bold;
+      color: var(--accent);
+      border: 1px solid rgba(255, 255, 255, 0.15);
     }
 
     .input-text {
-      background: rgba(20, 26, 42, 0.9);
+      flex: 1;
+      height: 34px;
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--card-border);
+      border-radius: 7px;
       color: #fff;
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      border-radius: 8px;
-      padding: 8px 12px;
+      padding: 0 10px;
       font-size: 12px;
       outline: none;
-      width: 100%;
     }
     .input-text:focus {
       border-color: var(--accent);
     }
 
-    /* Cards & Lists */
-    .card-box {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 10px;
-      padding: 14px;
-      margin-bottom: 12px;
-    }
-
     .list-item {
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      gap: 10px;
       padding: 8px 10px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-      gap: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     }
-    .list-item:last-child {
-      border-bottom: none;
-    }
-
     .list-art {
       width: 34px;
       height: 34px;
@@ -408,7 +689,6 @@
       object-fit: cover;
       background: rgba(255, 255, 255, 0.1);
     }
-
     .list-info {
       flex: 1;
       overflow: hidden;
@@ -428,7 +708,6 @@
       text-overflow: ellipsis;
     }
 
-    /* Nudge Row */
     .nudge-row {
       display: flex;
       gap: 6px;
@@ -436,7 +715,7 @@
     }
     .btn-nudge {
       flex: 1;
-      padding: 5px;
+      padding: 6px;
       font-size: 11px;
       font-weight: 700;
       background: rgba(255, 255, 255, 0.08);
@@ -448,51 +727,30 @@
     .btn-nudge:hover {
       background: rgba(255, 255, 255, 0.15);
     }
-
-    .tag-badge {
-      font-size: 10px;
-      padding: 2px 6px;
-      border-radius: 4px;
-      background: rgba(0, 242, 254, 0.15);
-      color: #00f2fe;
-    }
-
-    .hotkey-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 12px;
-    }
-    .hotkey-table td {
-      padding: 8px 6px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-    }
-    .hotkey-kbd {
-      background: rgba(255, 255, 255, 0.12);
-      padding: 3px 6px;
-      border-radius: 4px;
-      font-family: monospace;
-      font-weight: bold;
-      color: var(--accent);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-    }
   </style>
 </head>
 <body>
 
   <!-- Header -->
   <div class="header">
-    <div class="title">
-      ✨ NeonLyrics Studio
-      <span class="badge-v">v3.0.0</span>
+    <div class="title-group">
+      <div class="title">
+        <span>✨</span> NeonLyrics Studio
+      </div>
+      <span class="badge-v">VERCI ENGINE</span>
     </div>
-    <div style="font-size: 11px; color: rgba(255, 255, 255, 0.5);">
-      Windows Karaoke Engine
+    <div class="header-sub">
+      Experimental Music Typography & Visual Engine
     </div>
   </div>
 
   <!-- Tabs Navigation -->
   <div class="tabs-bar">
-    <button class="tab-btn active" data-tab="tab-visual">🎨 Visual Studio</button>
+    <button class="tab-btn active" data-tab="tab-modes">🔮 Visual Modes</button>
+    <button class="tab-btn" data-tab="tab-glow">✨ Glow Studio</button>
+    <button class="tab-btn" data-tab="tab-colors">🎨 Album Colors</button>
+    <button class="tab-btn" data-tab="tab-motion">🧪 Animation Lab</button>
+    <button class="tab-btn" data-tab="tab-visual">📐 Layout & Overlay</button>
     <button class="tab-btn" data-tab="tab-lyrics">🎵 Lyrics & Sync</button>
     <button class="tab-btn" data-tab="tab-favs">⭐ Favorites & History</button>
     <button class="tab-btn" data-tab="tab-spotify">🎧 Spotify & Source</button>
@@ -500,10 +758,185 @@
     <button class="tab-btn" data-tab="tab-hotkeys">⌨️ Shortcuts</button>
   </div>
 
-  <!-- TAB 1: VISUAL STUDIO -->
-  <div class="tab-content active" id="tab-visual">
+  <!-- TAB 1: VISUAL MODES (FOUR SELECTABLE ENGINE MODES) -->
+  <div class="tab-content active" id="tab-modes">
     
-    <div class="section-title">Quick Preset Themes</div>
+    <div class="section-title">Four Verci-Inspired Visualization Modes</div>
+    <div class="vis-cards-grid">
+
+      <!-- Ship Mode -->
+      <div class="vis-card active" data-mode="ship" id="card-mode-ship">
+        <div class="vis-card-header">
+          <span class="vis-card-badge">3D Drifting Wall</span>
+          <div class="vis-card-check">✓</div>
+        </div>
+        <div class="vis-card-preview preview-ship">
+          <div class="prev-line prev-past">receding into the depth</div>
+          <div class="prev-line prev-active">Focal Centerpiece of the Wall</div>
+          <div class="prev-line prev-next">drifting into the horizon</div>
+        </div>
+        <div class="vis-card-title">Ship</div>
+        <div class="vis-card-desc">Perspective-based lyric wall with layered typography, smooth 3D drifting, depth, tilt rotation, and fading. Active lyric remains the focal anchor.</div>
+      </div>
+
+      <!-- Fisheye Mode -->
+      <div class="vis-card" data-mode="fisheye" id="card-mode-fisheye">
+        <div class="vis-card-header">
+          <span class="vis-card-badge">Convex Lens</span>
+          <div class="vis-card-check">✓</div>
+        </div>
+        <div class="vis-card-preview preview-fisheye">
+          <div class="prev-line prev-past">subtle distance curve</div>
+          <div class="prev-line prev-active">Convex Lens Emphasis</div>
+          <div class="prev-line prev-next">smooth transition falloff</div>
+        </div>
+        <div class="vis-card-title">Fisheye</div>
+        <div class="vis-card-desc">Convex-lens-inspired typography. Scale and distort visual emphasis around the active lyric. Nearby lines fall off smoothly based on focal distance.</div>
+      </div>
+
+      <!-- Fisheye Visual Mode -->
+      <div class="vis-card" data-mode="fisheye-visual" id="card-mode-fisheye-visual">
+        <div class="vis-card-header">
+          <span class="vis-card-badge">Lens + Accents</span>
+          <div class="vis-card-check">✓</div>
+        </div>
+        <div class="vis-card-preview preview-fisheye-visual">
+          <div class="prev-line prev-past">ambient rhythm orbit</div>
+          <div class="prev-line prev-active"><span class="glyph-star">✦</span> Luminous Accents <span class="glyph-star">✦</span></div>
+          <div class="prev-line prev-next">harmonic glowing aura</div>
+        </div>
+        <div class="vis-card-title">Fisheye Visual</div>
+        <div class="vis-card-desc">Fisheye convex typography elevated with subtle decorative symbols ✦, emoji, and glowing accents. Preserves 100% legibility while adding poster aesthetic.</div>
+      </div>
+
+      <!-- Clean Mode -->
+      <div class="vis-card" data-mode="clean" id="card-mode-clean">
+        <div class="vis-card-header">
+          <span class="vis-card-badge">Minimalist Modern</span>
+          <div class="vis-card-check">✓</div>
+        </div>
+        <div class="vis-card-preview preview-clean">
+          <div class="prev-line prev-past">preceding contextual verse</div>
+          <div class="prev-line prev-active">Pure Modern Typography</div>
+          <div class="prev-line prev-next">uncluttered upcoming line</div>
+        </div>
+        <div class="vis-card-title">Clean</div>
+        <div class="vis-card-desc">Minimal, elegant lyrics with smooth transitions and zero unnecessary decoration. Maximum readability, lightweight GPU transforms, and subtle opacity fades.</div>
+      </div>
+
+    </div>
+
+    <div class="card-box" style="background: rgba(255, 42, 133, 0.04); border-color: rgba(255, 42, 133, 0.2);">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+        <span style="font-size: 11px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 0.5px;">Current Engine Mode</span>
+        <span class="tag-badge" id="current-mode-badge">Ship Active</span>
+      </div>
+      <p style="font-size: 11px; line-height: 1.5; color: rgba(255, 255, 255, 0.65);">
+        Selecting any mode immediately transforms the floating overlay in real time using lightweight CSS transforms. Your choice is persistently saved and synchronized across app restarts.
+      </p>
+    </div>
+
+    <div class="section-title" style="margin-top: 24px;">Transparent Wallpaper Mode</div>
+    <div class="card-box" style="margin-bottom: 16px;">
+      <div class="switch-row" style="margin-bottom: 12px;">
+        <div class="switch-info">
+          <span class="switch-title">Enable Desktop Wallpaper Mode</span>
+          <span class="switch-desc">Displays pure synchronized lyrics directly onto your wallpaper with no cards, badges, or backgrounds</span>
+        </div>
+        <input type="checkbox" class="switch-input" id="chk-wallpaper-enabled">
+      </div>
+      <div class="control-row" style="margin-bottom: 12px;">
+        <span class="control-label">Wallpaper Opacity</span>
+        <div class="slider-val-box">
+          <input type="range" class="control-slider" id="slider-wallpaper-opacity" min="10" max="100" value="85">
+          <span class="val-display" id="val-wallpaper-opacity">85%</span>
+        </div>
+      </div>
+      <div class="switch-row" style="margin-bottom: 12px;">
+        <div class="switch-info">
+          <span class="switch-title">Auto-Hide Controls When Idle</span>
+          <span class="switch-desc">Smoothly hides floating music controls when mouse cursor leaves the overlay</span>
+        </div>
+        <input type="checkbox" class="switch-input" id="chk-wallpaper-autohide" checked>
+      </div>
+      <div class="control-row">
+        <span class="control-label">Idle Timeout</span>
+        <div class="slider-val-box">
+          <input type="range" class="control-slider" id="slider-wallpaper-timeout" min="1" max="10" value="3">
+          <span class="val-display" id="val-wallpaper-timeout">3s</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- TAB 2: ALBUM ARTWORK COLOR INTELLIGENCE -->
+  <div class="tab-content" id="tab-colors">
+    
+    <div class="section-title">Color Extraction Intelligence</div>
+    <div class="switch-row">
+      <div class="switch-info">
+        <span class="switch-title">Auto Sync with Album Artwork</span>
+        <span class="switch-desc">Extract a coordinated 3-color palette from currently playing cover art and adapt text colors</span>
+      </div>
+      <input type="checkbox" class="switch-input" id="chk-auto-sync-colors" checked>
+    </div>
+
+    <div class="card-box" style="margin-bottom: 14px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+        <span style="font-size: 12px; font-weight: 700;">Coordinated Palette Swatches</span>
+        <button class="btn-action" id="btn-reset-colors" style="font-size: 11px; padding: 4px 10px;">↺ Reset Colors</button>
+      </div>
+
+      <div class="color-swatches-grid">
+        <!-- Primary -->
+        <div class="swatch-card">
+          <span class="swatch-label">Primary Lyric Text</span>
+          <div class="swatch-preview-box" id="swatch-preview-primary" style="background: #00f2fe;"></div>
+          <div class="swatch-input-wrap">
+            <input type="color" class="swatch-color-picker" id="picker-album-primary" value="#00f2fe">
+            <input type="text" class="swatch-hex-text" id="hex-album-primary" value="#00F2FE" maxlength="7">
+          </div>
+        </div>
+
+        <!-- Active Word -->
+        <div class="swatch-card">
+          <span class="swatch-label">Active-Word Highlight</span>
+          <div class="swatch-preview-box" id="swatch-preview-active" style="background: #ffffff;"></div>
+          <div class="swatch-input-wrap">
+            <input type="color" class="swatch-color-picker" id="picker-album-active" value="#ffffff">
+            <input type="text" class="swatch-hex-text" id="hex-album-active" value="#FFFFFF" maxlength="7">
+          </div>
+        </div>
+
+        <!-- Secondary -->
+        <div class="swatch-card">
+          <span class="swatch-label">Secondary Lyric Text</span>
+          <div class="swatch-preview-box" id="swatch-preview-secondary" style="background: #4facfe;"></div>
+          <div class="swatch-input-wrap">
+            <input type="color" class="swatch-color-picker" id="picker-album-secondary" value="#4facfe">
+            <input type="text" class="swatch-hex-text" id="hex-album-secondary" value="#4FACFE" maxlength="7">
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Color Typography Preview -->
+      <div class="typography-preview-pill" id="typography-preview-pill">
+        <div class="pill-line pill-past" id="pill-past-line" style="color: #4facfe;">Past lyric context in secondary color</div>
+        <div class="pill-line pill-active" id="pill-active-line">
+          <span id="pill-active-text" style="color: #00f2fe;">Primary lyrics phrase with</span>
+          <span id="pill-active-highlight" style="color: #ffffff; text-decoration: underline;">Active Highlight</span>
+        </div>
+        <div class="pill-line pill-next" id="pill-next-line" style="color: #4facfe;">Next upcoming phrase in secondary color</div>
+      </div>
+
+      <div style="font-size: 11px; color: var(--text-muted); display: flex; align-items: center; gap: 6px;">
+        <span class="tag-badge" id="album-sync-status">Auto Sync Ready</span>
+        <span>Extracted palettes are automatically cached by track. Missing or corrupt artwork falls back safely.</span>
+      </div>
+    </div>
+
+    <div class="section-title">Manual Preset Themes (When Auto Sync is Off)</div>
     <div class="palette-grid">
       <button class="palette-btn" data-theme="theme-cyber" style="background: linear-gradient(135deg, #00f2fe, #4facfe);">Cyber Aqua</button>
       <button class="palette-btn" data-theme="theme-neon-pink" style="background: linear-gradient(135deg, #ff007f, #a855f7);">Neon Pink</button>
@@ -515,27 +948,327 @@
       <button class="palette-btn" data-theme="theme-crimson-red" style="background: linear-gradient(135deg, #ef4444, #991b1b);">Crimson Red</button>
     </div>
 
-    <div class="section-title">Custom Color Matrix</div>
-    <div class="color-pickers-row">
-      <div class="picker-item">
-        <label>Primary Glow</label>
-        <input type="color" id="picker-primary" value="#00f2fe">
+  </div>
+
+  <!-- TAB 3: ANIMATION LAB -->
+  <div class="tab-content" id="tab-motion">
+    
+    <div class="section-title">Animation Quality Presets</div>
+    <div class="palette-grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom: 14px;">
+      <button class="palette-btn preset-btn" data-preset="ultra" style="background: linear-gradient(135deg, #ff2a85, #8b5cf6); text-align: left; padding: 0 12px; height: 46px;">
+        🎬 Ultra <span style="font-size: 10px; opacity: 0.85; font-weight: 500; display: block; margin-top: 2px;">120 FPS • High Blur</span>
+      </button>
+      <button class="palette-btn preset-btn active" data-preset="balanced" style="background: linear-gradient(135deg, #00f2fe, #4facfe); color: #07070a; text-align: left; padding: 0 12px; height: 46px;">
+        ⚖️ Balanced <span style="font-size: 10px; opacity: 0.85; font-weight: 600; display: block; margin-top: 2px;">60 FPS • Low Blur</span>
+      </button>
+      <button class="palette-btn preset-btn" data-preset="low" style="background: linear-gradient(135deg, #475569, #334155); text-align: left; padding: 0 12px; height: 46px;">
+        🌱 Low / Eco <span style="font-size: 10px; opacity: 0.85; font-weight: 500; display: block; margin-top: 2px;">30 FPS • Blur Off</span>
+      </button>
+    </div>
+
+    <!-- Live Animation Lab Interactive Preview -->
+    <div class="card-box" style="margin-bottom: 14px; background: rgba(0,0,0,0.4); border-color: rgba(255, 42, 133, 0.2);">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+        <span style="font-size: 11px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 0.5px;">Live Animation Lab Sandbox</span>
+        <button class="btn-action btn-primary" id="btn-lab-trigger" style="font-size: 10px; padding: 4px 10px;">▶ Test Transition</button>
       </div>
-      <div class="picker-item">
-        <label>Secondary Aura</label>
-        <input type="color" id="picker-secondary" value="#4facfe">
-      </div>
-      <div class="picker-item">
-        <label>Active Word</label>
-        <input type="color" id="picker-active-word" value="#ffffff">
-      </div>
-      <div class="picker-item">
-        <label>Sung Words</label>
-        <input type="color" id="picker-sung-word" value="#ffffff">
+
+      <div class="typography-preview-pill preview-ship" id="lab-preview-stage" style="height: 100px; display: flex; flex-direction: column; justify-content: center; overflow: hidden; margin-bottom: 0;">
+        <div class="line past-line line-settled" id="lab-line-past" style="font-size: 12px; opacity: 0.4;">Past lyric verse drifting away</div>
+        <div class="line active-line line-settled" id="lab-line-active" style="font-size: 17px; font-weight: 800; color: #fff; margin: 3px 0;">Active Lyric Under Lab Inspection</div>
+        <div class="line next-line line-settled" id="lab-line-next" style="font-size: 12px; opacity: 0.5;">Upcoming verse waiting in cadence</div>
       </div>
     </div>
 
-    <div class="section-title">Layout & Display Modes</div>
+    <div class="section-title">Frame Rate Controller Target</div>
+    <div class="select-row">
+      <label>Target Animation FPS</label>
+      <div class="segmented-wrap" id="fps-wrap">
+        <button class="seg-btn active" data-fps="auto">Auto</button>
+        <button class="seg-btn" data-fps="30">30</button>
+        <button class="seg-btn" data-fps="60">60</button>
+        <button class="seg-btn" data-fps="90">90</button>
+        <button class="seg-btn" data-fps="120">120</button>
+      </div>
+    </div>
+
+    <div class="section-title">Directional Motion Blur Controls</div>
+    <div class="switch-row">
+      <div class="switch-info">
+        <span class="switch-title">Enable Directional Motion Blur</span>
+        <span class="switch-desc">Applies vertical blur during movement and guarantees 100% stationary sharpness when settled</span>
+      </div>
+      <input type="checkbox" class="switch-input" id="chk-motion-blur" checked>
+    </div>
+
+    <div class="select-row" id="blur-intensity-row">
+      <label>Motion Blur Intensity</label>
+      <div class="segmented-wrap" id="blur-intensity-wrap">
+        <button class="seg-btn" data-val="off">Off</button>
+        <button class="seg-btn" data-val="low">Low (2px)</button>
+        <button class="seg-btn active" data-val="medium">Medium (4.5px)</button>
+        <button class="seg-btn" data-val="high">High (8px)</button>
+      </div>
+    </div>
+
+    <div class="section-title">Word-to-Word Animation Lab</div>
+    <div class="card-box">
+      <div class="switch-row" style="margin-bottom: 10px;">
+        <div class="switch-info">
+          <span class="switch-title">Enable Word Transitions</span>
+          <span class="switch-desc">Synchronized kinetic animations on word-level timestamps</span>
+        </div>
+        <input type="checkbox" class="switch-input" id="chk-word-transitions-enabled" checked>
+      </div>
+
+      <div class="select-row">
+        <label>Word Effect</label>
+        <select id="select-word-effect" style="background: rgba(255,255,255,0.06); border: 1px solid var(--card-border); color: #fff; padding: 6px 10px; border-radius: 6px; min-width: 150px;">
+          <option value="slide-blur">Slide + Blur</option>
+          <option value="morph">Morph / Shape</option>
+          <option value="particle-dissolve">Particle Dissolve</option>
+          <option value="elastic">Elastic Bounce</option>
+          <option value="letter-reveal">Letter-by-Letter Reveal</option>
+          <option value="fade-blur">Fade + Blur</option>
+        </select>
+      </div>
+
+      <div class="select-row" style="margin-top: 8px;">
+        <label>Word Easing Curve</label>
+        <select id="select-word-easing" style="background: rgba(255,255,255,0.06); border: 1px solid var(--card-border); color: #fff; padding: 6px 10px; border-radius: 6px; min-width: 150px;">
+          <option value="ease-out">Ease Out</option>
+          <option value="ease-in-out">Ease In Out</option>
+          <option value="cubic">Cubic</option>
+          <option value="elastic">Elastic</option>
+          <option value="bounce">Bounce</option>
+          <option value="spring">Spring</option>
+          <option value="linear">Linear</option>
+        </select>
+      </div>
+
+      <div class="slider-row" style="margin-top: 8px;">
+        <div class="slider-header">
+          <span>Word Transition Duration</span>
+          <span class="slider-val" id="word-duration-val">300ms</span>
+        </div>
+        <input type="range" id="slider-word-duration" min="100" max="800" step="25" value="300">
+      </div>
+    </div>
+
+    <div class="section-title">Line-to-Line Animation Lab</div>
+    <div class="card-box">
+      <div class="switch-row" style="margin-bottom: 10px;">
+        <div class="switch-info">
+          <span class="switch-title">Enable Line Transitions</span>
+          <span class="switch-desc">Stage animations between past, active, and upcoming lines</span>
+        </div>
+        <input type="checkbox" class="switch-input" id="chk-line-transitions-enabled" checked>
+      </div>
+
+      <div class="select-row">
+        <label>Line Effect</label>
+        <select id="select-line-effect" style="background: rgba(255,255,255,0.06); border: 1px solid var(--card-border); color: #fff; padding: 6px 10px; border-radius: 6px; min-width: 150px;">
+          <option value="fade-blur">Fade + Blur</option>
+          <option value="slide-blur">Slide + Blur</option>
+          <option value="slide">Slide</option>
+          <option value="crossfade">Crossfade</option>
+          <option value="morph">Morph</option>
+          <option value="elastic">Elastic</option>
+          <option value="particle-dissolve">Particle Dissolve</option>
+          <option value="vertical-reveal">Vertical Reveal</option>
+        </select>
+      </div>
+
+      <div class="select-row" style="margin-top: 8px;">
+        <label>Line Easing Curve</label>
+        <select id="select-line-easing" style="background: rgba(255,255,255,0.06); border: 1px solid var(--card-border); color: #fff; padding: 6px 10px; border-radius: 6px; min-width: 150px;">
+          <option value="ease-in-out">Ease In Out</option>
+          <option value="ease-out">Ease Out</option>
+          <option value="cubic">Cubic</option>
+          <option value="elastic">Elastic</option>
+          <option value="bounce">Bounce</option>
+          <option value="spring">Spring</option>
+          <option value="linear">Linear</option>
+        </select>
+      </div>
+
+      <div class="slider-row" style="margin-top: 8px;">
+        <div class="slider-header">
+          <span>Line Transition Duration</span>
+          <span class="slider-val" id="line-duration-val">450ms</span>
+        </div>
+        <input type="range" id="slider-line-duration" min="150" max="1200" step="50" value="450">
+      </div>
+    </div>
+
+    <div class="section-title">Fine-Tuning Motion Parameters</div>
+    <div class="slider-row">
+      <div class="slider-header">
+        <span>Animation Speed</span>
+        <span class="slider-val" id="anim-speed-val">1.0x</span>
+      </div>
+      <input type="range" id="slider-anim-speed" min="50" max="200" value="100">
+    </div>
+
+    <div class="slider-row">
+      <div class="slider-header">
+        <span>Transition Duration</span>
+        <span class="slider-val" id="anim-duration-val">0.28s</span>
+      </div>
+      <input type="range" id="slider-anim-duration" min="15" max="60" value="28">
+    </div>
+
+    <div class="slider-row">
+      <div class="slider-header">
+        <span>3D Perspective & Depth</span>
+        <span class="slider-val" id="anim-depth-val">800px</span>
+      </div>
+      <input type="range" id="slider-anim-depth" min="400" max="1400" step="50" value="800">
+    </div>
+
+    <div style="display: flex; justify-content: flex-end; margin-top: 10px;">
+      <button class="btn-action" id="btn-reset-anim-defaults" style="font-size: 11px;">↺ Reset Animation Defaults</button>
+    </div>
+
+    <div class="section-title">Accessibility & Hardware Safeguards</div>
+    <div class="switch-row">
+      <div class="switch-info">
+        <span class="switch-title">Respect OS Reduced Motion</span>
+        <span class="switch-desc">Instantly disable blur and 3D movement when Windows accessibility prefers reduced motion</span>
+      </div>
+      <input type="checkbox" class="switch-input" id="chk-reduced-motion" checked>
+    </div>
+
+    <div class="switch-row">
+      <div class="switch-info">
+        <span class="switch-title">GPU Fallback for Lower-Tier Hardware</span>
+        <span class="switch-desc">Automatically cap heavy filter rendering on battery or lower-core systems</span>
+      </div>
+      <input type="checkbox" class="switch-input" id="chk-gpu-fallback" checked>
+    </div>
+
+  </div>
+
+  <!-- TAB: GLOW STUDIO -->
+  <div class="tab-content" id="tab-glow">
+    <div class="section-title">✨ Deep Glow & Multi-Scale Bloom Preview</div>
+    <div class="card-box" style="padding: 12px; text-align: center; background: radial-gradient(ellipse at center, rgba(15, 23, 42, 0.6) 0%, rgba(3, 7, 18, 0.9) 100%);">
+      <canvas id="glow-preview-canvas" width="600" height="110" style="width: 100%; height: 110px; border-radius: 8px; display: block;"></canvas>
+    </div>
+
+    <div class="section-title">10 Cinematic Glow Presets</div>
+    <div class="vis-cards-grid" id="glow-presets-grid" style="grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 14px;">
+      <!-- Populated dynamically from GLOW_PRESETS -->
+    </div>
+
+    <div class="section-title">Custom Presets Management</div>
+    <div class="card-box" style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+      <select id="select-custom-glow-preset" class="setting-select" style="flex: 1; min-width: 160px; background: rgba(255,255,255,0.06); border: 1px solid var(--card-border); color: #fff; padding: 6px 10px; border-radius: 6px;">
+        <option value="">-- Saved Custom Presets --</option>
+      </select>
+      <button class="btn-action" id="btn-save-custom-glow">💾 Save Current</button>
+      <button class="btn-action" id="btn-dup-custom-glow">📋 Duplicate</button>
+      <button class="btn-action" id="btn-rename-custom-glow">✏️ Rename</button>
+      <button class="btn-action" id="btn-del-custom-glow" style="color: #ff4d4f;">🗑️ Delete</button>
+    </div>
+
+    <div class="section-title">Glow Engine Parameters</div>
+    <div class="card-box">
+      <!-- Enable Toggle -->
+      <div class="toggle-row" style="margin-bottom: 12px;">
+        <div>
+          <div style="font-weight: 600; font-size: 13px;">Enable Deep Glow</div>
+          <div style="font-size: 11px; color: var(--text-muted);">GPU-accelerated multi-pass bloom & soft-knee halo</div>
+        </div>
+        <input type="checkbox" class="switch-input" id="chk-glow-enabled" checked>
+      </div>
+
+      <!-- Intensity -->
+      <div class="slider-row">
+        <div class="slider-header">
+          <span>Glow Intensity</span>
+          <span class="slider-val" id="glow-intensity-val">0.75</span>
+        </div>
+        <input type="range" id="slider-glow-intensity" min="0" max="300" value="75">
+      </div>
+
+      <!-- Radius -->
+      <div class="slider-row">
+        <div class="slider-header">
+          <span>Glow Radius</span>
+          <span class="slider-val" id="glow-radius-val">0.55</span>
+        </div>
+        <input type="range" id="slider-glow-radius" min="10" max="200" value="55">
+      </div>
+
+      <!-- Threshold -->
+      <div class="slider-row">
+        <div class="slider-header">
+          <span>Luminance Threshold</span>
+          <span class="slider-val" id="glow-threshold-val">0.35</span>
+        </div>
+        <input type="range" id="slider-glow-threshold" min="0" max="100" value="35">
+      </div>
+
+      <!-- Exposure -->
+      <div class="slider-row">
+        <div class="slider-header">
+          <span>Exposure</span>
+          <span class="slider-val" id="glow-exposure-val">0.65</span>
+        </div>
+        <input type="range" id="slider-glow-exposure" min="10" max="300" value="65">
+      </div>
+
+      <!-- Saturation -->
+      <div class="slider-row">
+        <div class="slider-header">
+          <span>Saturation</span>
+          <span class="slider-val" id="glow-saturation-val">1.0</span>
+        </div>
+        <input type="range" id="slider-glow-saturation" min="0" max="300" value="100">
+      </div>
+
+      <!-- Opacity -->
+      <div class="slider-row">
+        <div class="slider-header">
+          <span>Glow Opacity</span>
+          <span class="slider-val" id="glow-opacity-val">100%</span>
+        </div>
+        <input type="range" id="slider-glow-opacity" min="0" max="100" value="100">
+      </div>
+
+      <!-- Color & Blend Mode -->
+      <div class="toggle-row" style="margin-top: 14px;">
+        <div style="font-weight: 600; font-size: 13px;">Glow Color</div>
+        <input type="color" id="picker-glow-color" value="#ff35b8" style="background: none; border: 1px solid var(--card-border); border-radius: 6px; width: 44px; height: 32px; cursor: pointer;">
+      </div>
+
+      <div class="toggle-row" style="margin-top: 10px;">
+        <div style="font-weight: 600; font-size: 13px;">Blend Mode</div>
+        <select id="select-glow-blend" style="background: rgba(255,255,255,0.06); border: 1px solid var(--card-border); color: #fff; padding: 6px 10px; border-radius: 6px; min-width: 140px;">
+          <option value="screen">Screen (Natural)</option>
+          <option value="add">Add (Vibrant)</option>
+          <option value="linear-dodge">Linear Dodge</option>
+          <option value="normal">Normal</option>
+          <option value="lighten">Lighten</option>
+        </select>
+      </div>
+
+      <div class="toggle-row" style="margin-top: 10px;">
+        <div style="font-weight: 600; font-size: 13px;">Bloom Quality Profile</div>
+        <select id="select-glow-quality" style="background: rgba(255,255,255,0.06); border: 1px solid var(--card-border); color: #fff; padding: 6px 10px; border-radius: 6px; min-width: 140px;">
+          <option value="ultra">Ultra (Multi-Scale 3-Level)</option>
+          <option value="balanced">Balanced (2-Level Downsample)</option>
+          <option value="low">Low (Fast Single-Pass)</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 4: LAYOUT & TYPOGRAPHY -->
+  <div class="tab-content" id="tab-visual">
+    
+    <div class="section-title">Display & Typography Configuration</div>
     <div class="select-row">
       <label>Display Lines Mode</label>
       <div class="segmented-wrap" id="line-mode-wrap">
@@ -631,7 +1364,7 @@
 
   </div>
 
-  <!-- TAB 2: LYRICS & SYNC -->
+  <!-- TAB 5: LYRICS & SYNC -->
   <div class="tab-content" id="tab-lyrics">
     <div class="card-box">
       <div class="slider-header">
@@ -668,7 +1401,7 @@
     </div>
   </div>
 
-  <!-- TAB 3: FAVORITES & HISTORY -->
+  <!-- TAB 6: FAVORITES & HISTORY -->
   <div class="tab-content" id="tab-favs">
     <div class="section-title">Favorite Tracks</div>
     <div class="card-box" id="favs-container" style="max-height: 220px; overflow-y: auto;">
@@ -684,10 +1417,10 @@
     </div>
   </div>
 
-  <!-- TAB 4: SPOTIFY & SOURCE -->
+  <!-- TAB 7: SPOTIFY & SOURCE -->
   <div class="tab-content" id="tab-spotify">
     <div class="card-box">
-      <h3 style="font-size: 14px; margin-bottom: 6px; color: #00f2fe;">Windows GSMTC Media Bridge</h3>
+      <h3 style="font-size: 14px; margin-bottom: 6px; color: var(--accent);">Windows GSMTC Media Bridge</h3>
       <p style="font-size: 12px; line-height: 1.5; color: rgba(255,255,255,0.7); margin-bottom: 10px;">
         NeonLyrics automatically hooks into the Windows Global System Media Transport Controls (GSMTC). It tracks playback, position, and metadata natively across <b>Spotify Desktop, Chrome, Edge, Brave, YouTube, iTunes</b>, and Windows Media Player out of the box with zero credentials required!
       </p>
@@ -708,7 +1441,7 @@
     </div>
   </div>
 
-  <!-- TAB 5: AI & LYRIC INSIGHTS -->
+  <!-- TAB 8: AI & LYRIC INSIGHTS -->
   <div class="tab-content" id="tab-ai">
     <div class="section-title">Current Song Insights (Offline Local Analysis)</div>
     <div class="card-box" id="ai-insights-box">
@@ -735,7 +1468,7 @@
     </div>
   </div>
 
-  <!-- TAB 6: SHORTCUTS -->
+  <!-- TAB 9: SHORTCUTS -->
   <div class="tab-content" id="tab-hotkeys">
     <div class="section-title">Global Hotkeys Cheatsheet</div>
     <div class="card-box">
@@ -764,6 +1497,17 @@
     </div>
   </div>
 
+  <!-- Directional Motion Blur Filter for Lab Preview -->
+  <svg class="motion-blur-svg-defs" aria-hidden="true" style="position: absolute; width: 0; height: 0; overflow: hidden; pointer-events: none;">
+    <defs>
+      <filter id="lab-motion-blur" x="-20%" y="-40%" width="140%" height="180%">
+        <feGaussianBlur id="lab-motion-blur-filter" stdDeviation="0 0" />
+      </filter>
+    </defs>
+  </svg>
+
+  <script src="src/utils/paletteExtractor.js"></script>
+  <script src="src/utils/motionEngine.js"></script>
   <script>
     const api = window.neonLyricsApi;
 
@@ -778,12 +1522,79 @@
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
         btn.classList.add('active');
-        document.getElementById(btn.dataset.tab).classList.add('active');
+        const content = document.getElementById(btn.dataset.tab);
+        if (content) content.classList.add('active');
 
         if (btn.dataset.tab === 'tab-ai' && lastPlayback) {
           runLyricInsights(lastPlayback);
         }
       });
+    });
+
+    // Lab Preview Engine
+    let labEngine = null;
+    function initLabEngine() {
+      try {
+        const svgEl = document.getElementById('lab-motion-blur-filter');
+        labEngine = new window.MotionBlurEngine({
+          motionBlur: config.animation?.motionBlur !== false,
+          motionBlurIntensity: config.animation?.motionBlurIntensity || 'medium',
+          targetFps: config.animation?.targetFps || 'auto',
+          animationSpeed: config.animation?.animationSpeed || 1.0,
+          transitionDuration: config.animation?.transitionDuration || 0.28,
+          perspectiveDepth: config.animation?.perspectiveDepth || 800,
+          visualizationMode: config.visualizationMode || 'ship',
+          svgFilterEl: svgEl
+        });
+      } catch (e) {}
+    }
+
+    let labCycleIdx = 0;
+    const labPhrases = [
+      { past: 'Fading echoes of the verse', active: 'Focal Active Lyric In Motion', next: 'Upcoming phrase awaiting its turn' },
+      { past: 'Yesterday’s notes remain clear', active: 'Luminous Typography In Full Flow', next: 'Next chapter in the rhythm' },
+      { past: 'Reverberation settles silently', active: 'Crisp Stationary Sharpness Guaranteed', next: 'Future verses drifting softly' }
+    ];
+
+    function triggerLabTransition() {
+      if (!labEngine) initLabEngine();
+      if (!labEngine) return;
+
+      labCycleIdx = (labCycleIdx + 1) % labPhrases.length;
+      const phrase = labPhrases[labCycleIdx];
+
+      const pastEl = document.getElementById('lab-line-past');
+      const activeEl = document.getElementById('lab-line-active');
+      const nextLineEl = document.getElementById('lab-line-next');
+
+      labEngine.applyConfig({
+        ...config.animation,
+        visualizationMode: config.visualizationMode || 'ship'
+      });
+
+      const visMode = config.visualizationMode || 'ship';
+      const stage = document.getElementById('lab-preview-stage');
+      if (stage) {
+        stage.className = `typography-preview-pill preview-${visMode}`;
+      }
+
+      labEngine.triggerTransition({
+        pastEl,
+        activeEl,
+        nextLineEl,
+        pastContent: phrase.past,
+        activeContent: visMode === 'fisheye-visual'
+          ? `<span class="glyph-star">✦</span> ${escapeHtml(phrase.active)} <span class="glyph-star">✦</span>`
+          : escapeHtml(phrase.active),
+        nextContent: phrase.next,
+        direction: 'forward',
+        visualizationMode: visMode,
+        duration: config.animation?.transitionDuration || 0.28
+      });
+    }
+
+    document.getElementById('btn-lab-trigger')?.addEventListener('click', () => {
+      triggerLabTransition();
     });
 
     async function loadSettings() {
@@ -797,6 +1608,8 @@
         }
       } catch (e) {}
 
+      initLabEngine();
+      await initGlowStudio();
       applyUI();
       renderFavorites();
       renderHistory();
@@ -805,19 +1618,95 @@
 
     function saveSettings() {
       api.saveConfig(config);
+      if (labEngine) {
+        labEngine.applyConfig({
+          ...config.animation,
+          visualizationMode: config.visualizationMode || 'ship'
+        });
+      }
+    }
+
+    function updateColorSwatchesUI() {
+      const isAuto = config.autoSyncAlbumColors !== false;
+      document.getElementById('chk-auto-sync-colors').checked = isAuto;
+
+      const pColor = config.manualColors?.primary || config.primaryColor || '#00f2fe';
+      const sColor = config.manualColors?.secondary || config.secondaryColor || '#4facfe';
+      const aColor = config.manualColors?.activeWord || config.activeWordColor || '#ffffff';
+
+      document.getElementById('picker-album-primary').value = pColor;
+      document.getElementById('hex-album-primary').value = pColor.toUpperCase();
+      document.getElementById('swatch-preview-primary').style.backgroundColor = pColor;
+
+      document.getElementById('picker-album-secondary').value = sColor;
+      document.getElementById('hex-album-secondary').value = sColor.toUpperCase();
+      document.getElementById('swatch-preview-secondary').style.backgroundColor = sColor;
+
+      document.getElementById('picker-album-active').value = aColor;
+      document.getElementById('hex-album-active').value = aColor.toUpperCase();
+      document.getElementById('swatch-preview-active').style.backgroundColor = aColor;
+
+      // Update Typography Preview Pill
+      const pillPast = document.getElementById('pill-past-line');
+      const pillActiveText = document.getElementById('pill-active-text');
+      const pillActiveHl = document.getElementById('pill-active-highlight');
+      const pillNext = document.getElementById('pill-next-line');
+
+      if (pillPast) pillPast.style.color = sColor;
+      if (pillNext) pillNext.style.color = sColor;
+      if (pillActiveText) pillActiveText.style.color = pColor;
+      if (pillActiveHl) {
+        pillActiveHl.style.color = aColor;
+        pillActiveHl.style.textShadow = `0 0 10px ${pColor}`;
+      }
+
+      const statusBadge = document.getElementById('album-sync-status');
+      if (statusBadge) {
+        if (isAuto) {
+          statusBadge.textContent = 'Auto Sync Active (Album Driven)';
+          statusBadge.style.color = '#00f2fe';
+          statusBadge.style.borderColor = 'rgba(0, 242, 254, 0.3)';
+        } else {
+          statusBadge.textContent = 'Manual Palette Active';
+          statusBadge.style.color = '#ff2a85';
+          statusBadge.style.borderColor = 'rgba(255, 42, 133, 0.3)';
+        }
+      }
     }
 
     function applyUI() {
-      // Palettes
-      document.querySelectorAll('.palette-btn').forEach(btn => {
-        btn.classList.toggle('active', !config.isCustomColor && btn.dataset.theme === config.theme);
+      const currentMode = config.visualizationMode || 'ship';
+
+      // Update 4 Visualization Cards
+      document.querySelectorAll('.vis-card').forEach(card => {
+        const isMatch = card.dataset.mode === currentMode;
+        card.classList.toggle('active', isMatch);
       });
 
-      // Custom Color Pickers
-      document.getElementById('picker-primary').value = config.primaryColor || '#00f2fe';
-      document.getElementById('picker-secondary').value = config.secondaryColor || '#4facfe';
-      document.getElementById('picker-active-word').value = config.activeWordColor || '#ffffff';
-      document.getElementById('picker-sung-word').value = config.sungWordColor || '#ffffff';
+      const modeBadge = document.getElementById('current-mode-badge');
+      if (modeBadge) {
+        const labels = {
+          'ship': 'Ship (3D Perspective Wall)',
+          'fisheye': 'Fisheye (Convex Lens)',
+          'fisheye-visual': 'Fisheye Visual (Lens + Glyphs)',
+          'clean': 'Clean (Minimal Elegance)'
+        };
+        modeBadge.textContent = labels[currentMode] || currentMode;
+      }
+
+      // Update Lab Stage
+      const labStage = document.getElementById('lab-preview-stage');
+      if (labStage) {
+        labStage.className = `typography-preview-pill preview-${currentMode}`;
+      }
+
+      // Update Color Swatches
+      updateColorSwatchesUI();
+
+      // Palettes (when manual themes used)
+      document.querySelectorAll('.palette-btn:not(.preset-btn)').forEach(btn => {
+        btn.classList.toggle('active', !config.isCustomColor && btn.dataset.theme === config.theme);
+      });
 
       // Typography
       document.getElementById('select-font').value = config.fontFamily || "'Outfit', sans-serif";
@@ -851,11 +1740,56 @@
       document.getElementById('slider-offset').value = Math.round(offsetVal * 10);
       document.getElementById('offset-val').textContent = `${offsetVal >= 0 ? '+' : ''}${offsetVal.toFixed(1)}s`;
 
-      // Switches
+      // Window Switches
       document.getElementById('chk-mini-player').checked = config.showMiniPlayer !== false;
       document.getElementById('chk-always-on-top').checked = Boolean(config.alwaysOnTop);
       document.getElementById('chk-click-through').checked = Boolean(config.isClickThrough);
       document.getElementById('chk-startup').checked = config.autoStart !== false;
+
+      // Animation Settings
+      const anim = config.animation || {};
+
+      // Quality Presets (Ultra, Balanced, Low)
+      document.querySelectorAll('.preset-btn').forEach(b => {
+        const p = b.dataset.preset;
+        const isMatch = (p === anim.qualityPreset) ||
+          (p === 'ultra' && anim.qualityPreset === 'cinematic') ||
+          (p === 'low' && anim.qualityPreset === 'eco');
+        b.classList.toggle('active', Boolean(isMatch));
+      });
+
+      // Target FPS
+      document.querySelectorAll('#fps-wrap .seg-btn').forEach(b => {
+        const val = b.dataset.fps;
+        const match = (val === 'auto' && (anim.targetFps === 'auto' || !anim.targetFps)) ||
+                      (String(anim.targetFps) === val);
+        b.classList.toggle('active', Boolean(match));
+      });
+
+      // Motion Blur Switch & Intensity
+      const isBlurOn = anim.motionBlur !== false;
+      document.getElementById('chk-motion-blur').checked = isBlurOn;
+
+      document.querySelectorAll('#blur-intensity-wrap .seg-btn').forEach(b => {
+        b.classList.toggle('active', b.dataset.val === (anim.motionBlurIntensity || 'medium'));
+      });
+
+      // Fine-tuning Animation Sliders
+      const speedVal = anim.animationSpeed !== undefined ? anim.animationSpeed : 1.0;
+      document.getElementById('slider-anim-speed').value = Math.round(speedVal * 100);
+      document.getElementById('anim-speed-val').textContent = `${speedVal.toFixed(1)}x`;
+
+      const durVal = anim.transitionDuration !== undefined ? anim.transitionDuration : 0.28;
+      document.getElementById('slider-anim-duration').value = Math.round(durVal * 100);
+      document.getElementById('anim-duration-val').textContent = `${durVal.toFixed(2)}s`;
+
+      const depthVal = anim.perspectiveDepth !== undefined ? anim.perspectiveDepth : 800;
+      document.getElementById('slider-anim-depth').value = depthVal;
+      document.getElementById('anim-depth-val').textContent = `${depthVal}px`;
+
+      // Accessibility & Hardware Fallback
+      document.getElementById('chk-reduced-motion').checked = anim.respectReducedMotion !== false;
+      document.getElementById('chk-gpu-fallback').checked = anim.gpuFallback !== false;
 
       // Spotify & AI fields
       if (config.spotify) {
@@ -866,47 +1800,591 @@
         document.getElementById('ai-endpoint').value = config.ai.apiEndpoint || '';
         document.getElementById('ai-key').value = config.ai.apiKey || '';
       }
+
+      // Word Transitions UI
+      const wt = config.wordTransitions || {};
+      const chkWt = document.getElementById('chk-word-transitions-enabled');
+      if (chkWt) chkWt.checked = wt.enabled !== false;
+      const selWtEff = document.getElementById('select-word-effect');
+      if (selWtEff && wt.effect) selWtEff.value = wt.effect;
+      const selWtEase = document.getElementById('select-word-easing');
+      if (selWtEase && wt.easing) selWtEase.value = wt.easing;
+      const sWtDur = document.getElementById('slider-word-duration');
+      if (sWtDur) {
+        sWtDur.value = wt.duration || 300;
+        document.getElementById('word-duration-val').textContent = `${wt.duration || 300}ms`;
+      }
+
+      // Line Transitions UI
+      const lt = config.lineTransitions || {};
+      const chkLt = document.getElementById('chk-line-transitions-enabled');
+      if (chkLt) chkLt.checked = lt.enabled !== false;
+      const selLtEff = document.getElementById('select-line-effect');
+      if (selLtEff && lt.effect) selLtEff.value = lt.effect;
+      const selLtEase = document.getElementById('select-line-easing');
+      if (selLtEase && lt.easing) selLtEase.value = lt.easing;
+      const sLtDur = document.getElementById('slider-line-duration');
+      if (sLtDur) {
+        sLtDur.value = lt.duration || 450;
+        document.getElementById('line-duration-val').textContent = `${lt.duration || 450}ms`;
+      }
+
+      // Wallpaper Mode UI
+      const wp = config.wallpaperMode || {};
+      const chkWp = document.getElementById('chk-wallpaper-enabled');
+      if (chkWp) chkWp.checked = Boolean(wp.enabled);
+      const sWpOp = document.getElementById('slider-wallpaper-opacity');
+      if (sWpOp) {
+        const opPct = Math.round((wp.opacity !== undefined ? wp.opacity : 0.85) * 100);
+        sWpOp.value = opPct;
+        const valWpOp = document.getElementById('val-wallpaper-opacity');
+        if (valWpOp) valWpOp.textContent = `${opPct}%`;
+      }
+      const chkWpAuto = document.getElementById('chk-wallpaper-autohide');
+      if (chkWpAuto) chkWpAuto.checked = wp.autoHideControls !== false;
+      const sWpTime = document.getElementById('slider-wallpaper-timeout');
+      if (sWpTime) {
+        sWpTime.value = wp.idleTimeoutSeconds || 3;
+        const valWpTime = document.getElementById('val-wallpaper-timeout');
+        if (valWpTime) valWpTime.textContent = `${wp.idleTimeoutSeconds || 3}s`;
+      }
+
+      updateGlowStudioUI();
     }
 
-    // Palette Clicks
-    document.querySelectorAll('.palette-btn').forEach(btn => {
+    // --- VISUALIZATION MODE SELECTION ---
+    document.querySelectorAll('.vis-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const mode = card.dataset.mode;
+        config.visualizationMode = mode;
+        applyUI();
+        saveSettings();
+        triggerLabTransition();
+      });
+    });
+
+    // Word Transition Listeners
+    document.getElementById('chk-word-transitions-enabled')?.addEventListener('change', (e) => {
+      config.wordTransitions = config.wordTransitions || {};
+      config.wordTransitions.enabled = e.target.checked;
+      saveSettings();
+    });
+    document.getElementById('select-word-effect')?.addEventListener('change', (e) => {
+      config.wordTransitions = config.wordTransitions || {};
+      config.wordTransitions.effect = e.target.value;
+      saveSettings();
+    });
+    document.getElementById('select-word-easing')?.addEventListener('change', (e) => {
+      config.wordTransitions = config.wordTransitions || {};
+      config.wordTransitions.easing = e.target.value;
+      saveSettings();
+    });
+    document.getElementById('slider-word-duration')?.addEventListener('input', (e) => {
+      const val = parseInt(e.target.value, 10);
+      config.wordTransitions = config.wordTransitions || {};
+      config.wordTransitions.duration = val;
+      document.getElementById('word-duration-val').textContent = `${val}ms`;
+      saveSettings();
+    });
+
+    // Line Transition Listeners
+    document.getElementById('chk-line-transitions-enabled')?.addEventListener('change', (e) => {
+      config.lineTransitions = config.lineTransitions || {};
+      config.lineTransitions.enabled = e.target.checked;
+      saveSettings();
+    });
+    document.getElementById('select-line-effect')?.addEventListener('change', (e) => {
+      config.lineTransitions = config.lineTransitions || {};
+      config.lineTransitions.effect = e.target.value;
+      saveSettings();
+    });
+    document.getElementById('select-line-easing')?.addEventListener('change', (e) => {
+      config.lineTransitions = config.lineTransitions || {};
+      config.lineTransitions.easing = e.target.value;
+      saveSettings();
+    });
+    document.getElementById('slider-line-duration')?.addEventListener('input', (e) => {
+      const val = parseInt(e.target.value, 10);
+      config.lineTransitions = config.lineTransitions || {};
+      config.lineTransitions.duration = val;
+      document.getElementById('line-duration-val').textContent = `${val}ms`;
+      saveSettings();
+    });
+
+    // Wallpaper Mode Listeners
+    document.getElementById('chk-wallpaper-enabled')?.addEventListener('change', (e) => {
+      config.wallpaperMode = config.wallpaperMode || {};
+      config.wallpaperMode.enabled = e.target.checked;
+      saveSettings();
+    });
+    document.getElementById('slider-wallpaper-opacity')?.addEventListener('input', (e) => {
+      config.wallpaperMode = config.wallpaperMode || {};
+      config.wallpaperMode.opacity = parseInt(e.target.value, 10) / 100;
+      const valWpOp = document.getElementById('val-wallpaper-opacity');
+      if (valWpOp) valWpOp.textContent = `${e.target.value}%`;
+      saveSettings();
+    });
+    document.getElementById('chk-wallpaper-autohide')?.addEventListener('change', (e) => {
+      config.wallpaperMode = config.wallpaperMode || {};
+      config.wallpaperMode.autoHideControls = e.target.checked;
+      saveSettings();
+    });
+    document.getElementById('slider-wallpaper-timeout')?.addEventListener('input', (e) => {
+      config.wallpaperMode = config.wallpaperMode || {};
+      config.wallpaperMode.idleTimeoutSeconds = parseInt(e.target.value, 10);
+      const valWpTime = document.getElementById('val-wallpaper-timeout');
+      if (valWpTime) valWpTime.textContent = `${e.target.value}s`;
+      saveSettings();
+    });
+
+    // --- ALBUM COLOR INTELLIGENCE CONTROLS ---
+    document.getElementById('chk-auto-sync-colors').addEventListener('change', (e) => {
+      config.autoSyncAlbumColors = e.target.checked;
+      applyUI();
+      saveSettings();
+    });
+
+    function setManualColor(key, hex) {
+      config.isCustomColor = true;
+      config.autoSyncAlbumColors = false;
+      config.manualColors = config.manualColors || { primary: '#00f2fe', secondary: '#4facfe', activeWord: '#ffffff' };
+      config.manualColors[key] = hex;
+
+      if (key === 'primary') config.primaryColor = hex;
+      if (key === 'secondary') config.secondaryColor = hex;
+      if (key === 'activeWord') {
+        config.activeWordColor = hex;
+        config.sungWordColor = hex;
+      }
+      applyUI();
+      saveSettings();
+    }
+
+    // Pickers
+    document.getElementById('picker-album-primary').addEventListener('input', (e) => {
+      setManualColor('primary', e.target.value);
+    });
+    document.getElementById('picker-album-secondary').addEventListener('input', (e) => {
+      setManualColor('secondary', e.target.value);
+    });
+    document.getElementById('picker-album-active').addEventListener('input', (e) => {
+      setManualColor('activeWord', e.target.value);
+    });
+
+    // Hex text inputs
+    function wireHexInput(inputId, key) {
+      const input = document.getElementById(inputId);
+      input.addEventListener('change', (e) => {
+        let val = e.target.value.trim();
+        if (!val.startsWith('#')) val = '#' + val;
+        if (/^#[0-9A-Fa-f]{6}$/.test(val)) {
+          setManualColor(key, val);
+        } else {
+          applyUI();
+        }
+      });
+    }
+    wireHexInput('hex-album-primary', 'primary');
+    wireHexInput('hex-album-secondary', 'secondary');
+    wireHexInput('hex-album-active', 'activeWord');
+
+    // Reset Colors Button
+    document.getElementById('btn-reset-colors').addEventListener('click', () => {
+      config.autoSyncAlbumColors = true;
+      config.isCustomColor = false;
+      config.theme = 'theme-cyber';
+      config.manualColors = {
+        primary: '#00f2fe',
+        secondary: '#4facfe',
+        activeWord: '#ffffff'
+      };
+      config.primaryColor = '#00f2fe';
+      config.secondaryColor = '#4facfe';
+      config.activeWordColor = '#ffffff';
+      config.sungWordColor = '#ffffff';
+      applyUI();
+      saveSettings();
+    });
+
+    // Palette Clicks (Theme Presets)
+    document.querySelectorAll('.palette-btn:not(.preset-btn)').forEach(btn => {
       btn.addEventListener('click', () => {
         config.isCustomColor = false;
+        config.autoSyncAlbumColors = false;
         config.theme = btn.dataset.theme;
         applyUI();
         saveSettings();
       });
     });
 
-    // Custom Color Inputs
-    ['picker-primary', 'picker-secondary', 'picker-active-word', 'picker-sung-word'].forEach(id => {
-      document.getElementById(id).addEventListener('input', () => {
-        config.isCustomColor = true;
-        config.primaryColor = document.getElementById('picker-primary').value;
-        config.secondaryColor = document.getElementById('picker-secondary').value;
-        config.activeWordColor = document.getElementById('picker-active-word').value;
-        config.sungWordColor = document.getElementById('picker-sung-word').value;
+    // --- ANIMATION LAB CONTROLS ---
+
+    // Quality Presets
+    document.querySelectorAll('.preset-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const pKey = btn.dataset.preset;
+        config.animation = config.animation || {};
+        config.animation.qualityPreset = pKey;
+
+        if (pKey === 'ultra') {
+          config.animation.targetFps = 120;
+          config.animation.motionBlur = true;
+          config.animation.motionBlurIntensity = 'high';
+          config.animation.animationSpeed = 1.2;
+          config.animation.transitionDuration = 0.24;
+        } else if (pKey === 'balanced') {
+          config.animation.targetFps = 60;
+          config.animation.motionBlur = true;
+          config.animation.motionBlurIntensity = 'low';
+          config.animation.animationSpeed = 1.0;
+          config.animation.transitionDuration = 0.28;
+        } else if (pKey === 'low') {
+          config.animation.targetFps = 30;
+          config.animation.motionBlur = false;
+          config.animation.motionBlurIntensity = 'off';
+          config.animation.animationSpeed = 1.0;
+          config.animation.transitionDuration = 0.28;
+        }
+
         applyUI();
         saveSettings();
+        triggerLabTransition();
       });
     });
 
-    // Font Family
+    // Word Transition Listeners
+    document.getElementById('chk-word-transitions-enabled')?.addEventListener('change', (e) => {
+      config.wordTransitions = config.wordTransitions || {};
+      config.wordTransitions.enabled = e.target.checked;
+      saveSettings();
+    });
+    document.getElementById('select-word-effect')?.addEventListener('change', (e) => {
+      config.wordTransitions = config.wordTransitions || {};
+      config.wordTransitions.effect = e.target.value;
+      saveSettings();
+    });
+    document.getElementById('select-word-easing')?.addEventListener('change', (e) => {
+      config.wordTransitions = config.wordTransitions || {};
+      config.wordTransitions.easing = e.target.value;
+      saveSettings();
+    });
+    document.getElementById('slider-word-duration')?.addEventListener('input', (e) => {
+      const val = parseInt(e.target.value, 10);
+      config.wordTransitions = config.wordTransitions || {};
+      config.wordTransitions.duration = val;
+      document.getElementById('word-duration-val').textContent = `${val}ms`;
+      saveSettings();
+    });
+
+    // Line Transition Listeners
+    document.getElementById('chk-line-transitions-enabled')?.addEventListener('change', (e) => {
+      config.lineTransitions = config.lineTransitions || {};
+      config.lineTransitions.enabled = e.target.checked;
+      saveSettings();
+    });
+    document.getElementById('select-line-effect')?.addEventListener('change', (e) => {
+      config.lineTransitions = config.lineTransitions || {};
+      config.lineTransitions.effect = e.target.value;
+      saveSettings();
+    });
+    document.getElementById('select-line-easing')?.addEventListener('change', (e) => {
+      config.lineTransitions = config.lineTransitions || {};
+      config.lineTransitions.easing = e.target.value;
+      saveSettings();
+    });
+    document.getElementById('slider-line-duration')?.addEventListener('input', (e) => {
+      const val = parseInt(e.target.value, 10);
+      config.lineTransitions = config.lineTransitions || {};
+      config.lineTransitions.duration = val;
+      document.getElementById('line-duration-val').textContent = `${val}ms`;
+      saveSettings();
+    });
+
+    // Wallpaper Mode Listeners
+    document.getElementById('chk-wallpaper-enabled')?.addEventListener('change', (e) => {
+      config.wallpaperMode = config.wallpaperMode || {};
+      config.wallpaperMode.enabled = e.target.checked;
+      saveSettings();
+    });
+    document.getElementById('slider-wallpaper-opacity')?.addEventListener('input', (e) => {
+      config.wallpaperMode = config.wallpaperMode || {};
+      config.wallpaperMode.opacity = parseInt(e.target.value, 10) / 100;
+      const valWpOp = document.getElementById('val-wallpaper-opacity');
+      if (valWpOp) valWpOp.textContent = `${e.target.value}%`;
+      saveSettings();
+    });
+    document.getElementById('chk-wallpaper-autohide')?.addEventListener('change', (e) => {
+      config.wallpaperMode = config.wallpaperMode || {};
+      config.wallpaperMode.autoHideControls = e.target.checked;
+      saveSettings();
+    });
+    document.getElementById('slider-wallpaper-timeout')?.addEventListener('input', (e) => {
+      config.wallpaperMode = config.wallpaperMode || {};
+      config.wallpaperMode.idleTimeoutSeconds = parseInt(e.target.value, 10);
+      const valWpTime = document.getElementById('val-wallpaper-timeout');
+      if (valWpTime) valWpTime.textContent = `${e.target.value}s`;
+      saveSettings();
+    });
+
+    // Target FPS
+    document.querySelectorAll('#fps-wrap .seg-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        config.animation = config.animation || {};
+        const fpsVal = btn.dataset.fps === 'auto' ? 'auto' : parseInt(btn.dataset.fps, 10);
+        config.animation.targetFps = fpsVal;
+        config.animation.qualityPreset = 'custom';
+        applyUI();
+        saveSettings();
+        triggerLabTransition();
+      });
+    });
+
+    // Word Transition Listeners
+    document.getElementById('chk-word-transitions-enabled')?.addEventListener('change', (e) => {
+      config.wordTransitions = config.wordTransitions || {};
+      config.wordTransitions.enabled = e.target.checked;
+      saveSettings();
+    });
+    document.getElementById('select-word-effect')?.addEventListener('change', (e) => {
+      config.wordTransitions = config.wordTransitions || {};
+      config.wordTransitions.effect = e.target.value;
+      saveSettings();
+    });
+    document.getElementById('select-word-easing')?.addEventListener('change', (e) => {
+      config.wordTransitions = config.wordTransitions || {};
+      config.wordTransitions.easing = e.target.value;
+      saveSettings();
+    });
+    document.getElementById('slider-word-duration')?.addEventListener('input', (e) => {
+      const val = parseInt(e.target.value, 10);
+      config.wordTransitions = config.wordTransitions || {};
+      config.wordTransitions.duration = val;
+      document.getElementById('word-duration-val').textContent = `${val}ms`;
+      saveSettings();
+    });
+
+    // Line Transition Listeners
+    document.getElementById('chk-line-transitions-enabled')?.addEventListener('change', (e) => {
+      config.lineTransitions = config.lineTransitions || {};
+      config.lineTransitions.enabled = e.target.checked;
+      saveSettings();
+    });
+    document.getElementById('select-line-effect')?.addEventListener('change', (e) => {
+      config.lineTransitions = config.lineTransitions || {};
+      config.lineTransitions.effect = e.target.value;
+      saveSettings();
+    });
+    document.getElementById('select-line-easing')?.addEventListener('change', (e) => {
+      config.lineTransitions = config.lineTransitions || {};
+      config.lineTransitions.easing = e.target.value;
+      saveSettings();
+    });
+    document.getElementById('slider-line-duration')?.addEventListener('input', (e) => {
+      const val = parseInt(e.target.value, 10);
+      config.lineTransitions = config.lineTransitions || {};
+      config.lineTransitions.duration = val;
+      document.getElementById('line-duration-val').textContent = `${val}ms`;
+      saveSettings();
+    });
+
+    // Wallpaper Mode Listeners
+    document.getElementById('chk-wallpaper-enabled')?.addEventListener('change', (e) => {
+      config.wallpaperMode = config.wallpaperMode || {};
+      config.wallpaperMode.enabled = e.target.checked;
+      saveSettings();
+    });
+    document.getElementById('slider-wallpaper-opacity')?.addEventListener('input', (e) => {
+      config.wallpaperMode = config.wallpaperMode || {};
+      config.wallpaperMode.opacity = parseInt(e.target.value, 10) / 100;
+      const valWpOp = document.getElementById('val-wallpaper-opacity');
+      if (valWpOp) valWpOp.textContent = `${e.target.value}%`;
+      saveSettings();
+    });
+    document.getElementById('chk-wallpaper-autohide')?.addEventListener('change', (e) => {
+      config.wallpaperMode = config.wallpaperMode || {};
+      config.wallpaperMode.autoHideControls = e.target.checked;
+      saveSettings();
+    });
+    document.getElementById('slider-wallpaper-timeout')?.addEventListener('input', (e) => {
+      config.wallpaperMode = config.wallpaperMode || {};
+      config.wallpaperMode.idleTimeoutSeconds = parseInt(e.target.value, 10);
+      const valWpTime = document.getElementById('val-wallpaper-timeout');
+      if (valWpTime) valWpTime.textContent = `${e.target.value}s`;
+      saveSettings();
+    });
+
+    // Motion Blur Toggle
+    document.getElementById('chk-motion-blur').addEventListener('change', (e) => {
+      config.animation = config.animation || {};
+      config.animation.motionBlur = e.target.checked;
+      config.animation.qualityPreset = 'custom';
+      applyUI();
+      saveSettings();
+      triggerLabTransition();
+    });
+
+    // Blur Intensity
+    document.querySelectorAll('#blur-intensity-wrap .seg-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        config.animation = config.animation || {};
+        config.animation.motionBlurIntensity = btn.dataset.val;
+        config.animation.motionBlur = btn.dataset.val !== 'off';
+        config.animation.qualityPreset = 'custom';
+        applyUI();
+        saveSettings();
+        triggerLabTransition();
+      });
+    });
+
+    // Word Transition Listeners
+    document.getElementById('chk-word-transitions-enabled')?.addEventListener('change', (e) => {
+      config.wordTransitions = config.wordTransitions || {};
+      config.wordTransitions.enabled = e.target.checked;
+      saveSettings();
+    });
+    document.getElementById('select-word-effect')?.addEventListener('change', (e) => {
+      config.wordTransitions = config.wordTransitions || {};
+      config.wordTransitions.effect = e.target.value;
+      saveSettings();
+    });
+    document.getElementById('select-word-easing')?.addEventListener('change', (e) => {
+      config.wordTransitions = config.wordTransitions || {};
+      config.wordTransitions.easing = e.target.value;
+      saveSettings();
+    });
+    document.getElementById('slider-word-duration')?.addEventListener('input', (e) => {
+      const val = parseInt(e.target.value, 10);
+      config.wordTransitions = config.wordTransitions || {};
+      config.wordTransitions.duration = val;
+      document.getElementById('word-duration-val').textContent = `${val}ms`;
+      saveSettings();
+    });
+
+    // Line Transition Listeners
+    document.getElementById('chk-line-transitions-enabled')?.addEventListener('change', (e) => {
+      config.lineTransitions = config.lineTransitions || {};
+      config.lineTransitions.enabled = e.target.checked;
+      saveSettings();
+    });
+    document.getElementById('select-line-effect')?.addEventListener('change', (e) => {
+      config.lineTransitions = config.lineTransitions || {};
+      config.lineTransitions.effect = e.target.value;
+      saveSettings();
+    });
+    document.getElementById('select-line-easing')?.addEventListener('change', (e) => {
+      config.lineTransitions = config.lineTransitions || {};
+      config.lineTransitions.easing = e.target.value;
+      saveSettings();
+    });
+    document.getElementById('slider-line-duration')?.addEventListener('input', (e) => {
+      const val = parseInt(e.target.value, 10);
+      config.lineTransitions = config.lineTransitions || {};
+      config.lineTransitions.duration = val;
+      document.getElementById('line-duration-val').textContent = `${val}ms`;
+      saveSettings();
+    });
+
+    // Wallpaper Mode Listeners
+    document.getElementById('chk-wallpaper-enabled')?.addEventListener('change', (e) => {
+      config.wallpaperMode = config.wallpaperMode || {};
+      config.wallpaperMode.enabled = e.target.checked;
+      saveSettings();
+    });
+    document.getElementById('slider-wallpaper-opacity')?.addEventListener('input', (e) => {
+      config.wallpaperMode = config.wallpaperMode || {};
+      config.wallpaperMode.opacity = parseInt(e.target.value, 10) / 100;
+      const valWpOp = document.getElementById('val-wallpaper-opacity');
+      if (valWpOp) valWpOp.textContent = `${e.target.value}%`;
+      saveSettings();
+    });
+    document.getElementById('chk-wallpaper-autohide')?.addEventListener('change', (e) => {
+      config.wallpaperMode = config.wallpaperMode || {};
+      config.wallpaperMode.autoHideControls = e.target.checked;
+      saveSettings();
+    });
+    document.getElementById('slider-wallpaper-timeout')?.addEventListener('input', (e) => {
+      config.wallpaperMode = config.wallpaperMode || {};
+      config.wallpaperMode.idleTimeoutSeconds = parseInt(e.target.value, 10);
+      const valWpTime = document.getElementById('val-wallpaper-timeout');
+      if (valWpTime) valWpTime.textContent = `${e.target.value}s`;
+      saveSettings();
+    });
+
+    // Animation Speed Slider
+    document.getElementById('slider-anim-speed').addEventListener('input', (e) => {
+      const val = parseFloat(e.target.value) / 100;
+      config.animation = config.animation || {};
+      config.animation.animationSpeed = val;
+      config.animation.qualityPreset = 'custom';
+      document.getElementById('anim-speed-val').textContent = `${val.toFixed(1)}x`;
+      saveSettings();
+    });
+
+    // Transition Duration Slider
+    document.getElementById('slider-anim-duration').addEventListener('input', (e) => {
+      const val = parseFloat(e.target.value) / 100;
+      config.animation = config.animation || {};
+      config.animation.transitionDuration = val;
+      config.animation.qualityPreset = 'custom';
+      document.getElementById('anim-duration-val').textContent = `${val.toFixed(2)}s`;
+      saveSettings();
+    });
+
+    // Perspective Depth Slider
+    document.getElementById('slider-anim-depth').addEventListener('input', (e) => {
+      const val = parseInt(e.target.value, 10);
+      config.animation = config.animation || {};
+      config.animation.perspectiveDepth = val;
+      config.animation.qualityPreset = 'custom';
+      document.getElementById('anim-depth-val').textContent = `${val}px`;
+      saveSettings();
+    });
+
+    // Reset Animation Defaults
+    document.getElementById('btn-reset-anim-defaults').addEventListener('click', () => {
+      config.animation = {
+        motionBlur: true,
+        motionBlurIntensity: 'medium',
+        targetFps: 'auto',
+        qualityPreset: 'balanced',
+        respectReducedMotion: true,
+        gpuFallback: true,
+        animationSpeed: 1.0,
+        transitionDuration: 0.28,
+        perspectiveDepth: 800
+      };
+      applyUI();
+      saveSettings();
+      triggerLabTransition();
+    });
+
+    // Accessibility & Fallback
+    document.getElementById('chk-reduced-motion').addEventListener('change', (e) => {
+      config.animation = config.animation || {};
+      config.animation.respectReducedMotion = e.target.checked;
+      saveSettings();
+    });
+
+    document.getElementById('chk-gpu-fallback').addEventListener('change', (e) => {
+      config.animation = config.animation || {};
+      config.animation.gpuFallback = e.target.checked;
+      saveSettings();
+    });
+
+    // Typography & Layout Controls
     document.getElementById('select-font').addEventListener('change', (e) => {
       config.fontFamily = e.target.value;
       saveSettings();
     });
 
-    // Line Mode Segmented
     document.querySelectorAll('#line-mode-wrap .seg-btn').forEach(btn => {
       btn.addEventListener('click', () => {
-        config.lineMode = parseInt(btn.dataset.val);
+        config.lineMode = parseInt(btn.dataset.val, 10);
         applyUI();
         saveSettings();
       });
     });
 
-    // Alignment Segmented
     document.querySelectorAll('#align-wrap .seg-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         config.textAlign = btn.dataset.val;
@@ -915,7 +2393,6 @@
       });
     });
 
-    // Sliders
     document.getElementById('slider-font').addEventListener('input', (e) => {
       config.fontScale = parseFloat(e.target.value) / 100;
       document.getElementById('font-val').textContent = `${e.target.value}%`;
@@ -935,7 +2412,7 @@
     });
 
     document.getElementById('slider-backdrop-blur').addEventListener('input', (e) => {
-      config.backdropBlur = parseInt(e.target.value);
+      config.backdropBlur = parseInt(e.target.value, 10);
       document.getElementById('backdrop-blur-val').textContent = `${e.target.value}px`;
       saveSettings();
     });
@@ -948,7 +2425,7 @@
     }
 
     document.getElementById('slider-offset').addEventListener('input', (e) => {
-      setOffset(parseInt(e.target.value) / 10);
+      setOffset(parseInt(e.target.value, 10) / 10);
     });
 
     document.getElementById('btn-nudge-back-large').addEventListener('click', () => setOffset(config.syncOffset - 0.5));
@@ -987,6 +2464,14 @@
       document.getElementById('chk-click-through').checked = val;
     });
 
+    // Sync config if updated from overlay or tray
+    if (api.onApplyConfig) {
+      api.onApplyConfig((newConfig) => {
+        config = { ...config, ...newConfig };
+        applyUI();
+      });
+    }
+
     // Search Alternative Lyrics
     document.getElementById('btn-do-search').addEventListener('click', async () => {
       const q = document.getElementById('input-search-query').value.trim();
@@ -1021,7 +2506,7 @@
 
         listEl.querySelectorAll('.btn-apply-candidate').forEach(b => {
           b.addEventListener('click', async () => {
-            const chosen = results[parseInt(b.dataset.idx)];
+            const chosen = results[parseInt(b.dataset.idx, 10)];
             b.textContent = 'Applying...';
             const ok = await api.selectLyrics(chosen);
             b.textContent = ok ? '✓ Applied' : 'Failed';
@@ -1143,7 +2628,7 @@
         <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 12px;">
           <div style="background: rgba(255,255,255,0.04); padding: 8px; border-radius: 8px;">
             <div style="font-size: 10px; color: rgba(255,255,255,0.5);">Emotional Mood</div>
-            <div style="font-size: 12px; font-weight: 700; color: #00f2fe;">${escapeHtml(metrics.sentiment.label)}</div>
+            <div style="font-size: 12px; font-weight: 700; color: #ff2a85;">${escapeHtml(metrics.sentiment.label)}</div>
           </div>
           <div style="background: rgba(255,255,255,0.04); padding: 8px; border-radius: 8px;">
             <div style="font-size: 10px; color: rgba(255,255,255,0.5);">Vocabulary Richness</div>
@@ -1210,6 +2695,344 @@
         .replace(/>/g, '&gt;')
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#039;');
+    }
+
+    // --- GLOW STUDIO IMPLEMENTATION ---
+    let customGlowPresets = [];
+    let glowStudioEventsBound = false;
+
+    async function initGlowStudio() {
+      const grid = document.getElementById('glow-presets-grid');
+      if (grid && window.GLOW_PRESETS) {
+        grid.innerHTML = '';
+        window.GLOW_PRESETS.forEach(preset => {
+          const card = document.createElement('div');
+          card.className = 'vis-card';
+          card.dataset.presetId = preset.id;
+          card.style.padding = '10px 12px';
+          card.innerHTML = `
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+              <span style="font-weight: 700; font-size: 12px; color: ${preset.color};">${escapeHtml(preset.name)}</span>
+              <span style="font-size: 9px; text-transform: uppercase; padding: 2px 6px; border-radius: 4px; background: rgba(255,255,255,0.08);">${preset.blendMode}</span>
+            </div>
+            <div style="font-size: 11px; color: rgba(255,255,255,0.6); display: flex; gap: 8px;">
+              <span>Int: ${preset.intensity}</span>
+              <span>Rad: ${preset.radius}</span>
+              <span>${preset.quality}</span>
+            </div>
+          `;
+          card.addEventListener('click', () => {
+            applyGlowPreset(preset);
+          });
+          grid.appendChild(card);
+        });
+      }
+
+      await refreshCustomGlowPresetsList();
+      if (!glowStudioEventsBound) {
+        bindGlowStudioEvents();
+        glowStudioEventsBound = true;
+      }
+    }
+
+    async function refreshCustomGlowPresetsList() {
+      const select = document.getElementById('select-custom-glow-preset');
+      if (!select) return;
+      try {
+        customGlowPresets = await api.getCustomGlowPresets() || [];
+        select.innerHTML = '<option value="">-- Saved Custom Presets --</option>';
+        customGlowPresets.forEach(cp => {
+          const opt = document.createElement('option');
+          opt.value = cp.id;
+          opt.textContent = cp.name;
+          select.appendChild(opt);
+        });
+      } catch (e) {}
+    }
+
+    function applyGlowPreset(preset) {
+      if (!preset) return;
+      config.glow = {
+        enabled: true,
+        intensity: preset.intensity,
+        radius: preset.radius,
+        threshold: preset.threshold,
+        exposure: preset.exposure,
+        saturation: preset.saturation,
+        opacity: preset.opacity !== undefined ? preset.opacity : 1.0,
+        color: preset.color,
+        blendMode: preset.blendMode,
+        quality: preset.quality || 'balanced',
+        layers: preset.layers || []
+      };
+      config.glowIntensity = preset.intensity;
+      updateGlowStudioUI();
+      saveSettings();
+    }
+
+    function updateGlowStudioUI() {
+      const glow = config.glow || {};
+      const chk = document.getElementById('chk-glow-enabled');
+      if (chk) chk.checked = glow.enabled !== false;
+
+      const intensity = typeof glow.intensity === 'number' ? glow.intensity : 0.75;
+      const radius = typeof glow.radius === 'number' ? glow.radius : 0.55;
+      const threshold = typeof glow.threshold === 'number' ? glow.threshold : 0.35;
+      const exposure = typeof glow.exposure === 'number' ? glow.exposure : 0.65;
+      const saturation = typeof glow.saturation === 'number' ? glow.saturation : 1.0;
+      const opacity = typeof glow.opacity === 'number' ? glow.opacity : 1.0;
+
+      const sInt = document.getElementById('slider-glow-intensity');
+      if (sInt) {
+        sInt.value = Math.round(intensity * 100);
+        document.getElementById('glow-intensity-val').textContent = intensity.toFixed(2);
+      }
+
+      const sRad = document.getElementById('slider-glow-radius');
+      if (sRad) {
+        sRad.value = Math.round(radius * 100);
+        document.getElementById('glow-radius-val').textContent = radius.toFixed(2);
+      }
+
+      const sThr = document.getElementById('slider-glow-threshold');
+      if (sThr) {
+        sThr.value = Math.round(threshold * 100);
+        document.getElementById('glow-threshold-val').textContent = threshold.toFixed(2);
+      }
+
+      const sExp = document.getElementById('slider-glow-exposure');
+      if (sExp) {
+        sExp.value = Math.round(exposure * 100);
+        document.getElementById('glow-exposure-val').textContent = exposure.toFixed(2);
+      }
+
+      const sSat = document.getElementById('slider-glow-saturation');
+      if (sSat) {
+        sSat.value = Math.round(saturation * 100);
+        document.getElementById('glow-saturation-val').textContent = saturation.toFixed(2);
+      }
+
+      const sOpa = document.getElementById('slider-glow-opacity');
+      if (sOpa) {
+        sOpa.value = Math.round(opacity * 100);
+        document.getElementById('glow-opacity-val').textContent = `${Math.round(opacity * 100)}%`;
+      }
+
+      const pCol = document.getElementById('picker-glow-color');
+      if (pCol && glow.color) pCol.value = glow.color;
+
+      const sBlend = document.getElementById('select-glow-blend');
+      if (sBlend && glow.blendMode) sBlend.value = glow.blendMode;
+
+      const sQual = document.getElementById('select-glow-quality');
+      if (sQual && glow.quality) sQual.value = glow.quality;
+
+      document.querySelectorAll('#glow-presets-grid .vis-card').forEach(card => {
+        const pId = card.dataset.presetId;
+        const p = window.GLOW_PRESETS ? window.GLOW_PRESETS.find(x => x.id === pId) : null;
+        const isMatch = p && Math.abs(p.intensity - intensity) < 0.05 && p.color.toLowerCase() === (glow.color || '').toLowerCase();
+        card.classList.toggle('active', Boolean(isMatch));
+      });
+
+      renderGlowPreview();
+    }
+
+    function renderGlowPreview() {
+      const canvas = document.getElementById('glow-preview-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      const w = canvas.width;
+      const h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+
+      const glow = config.glow || {};
+      const isEnabled = glow.enabled !== false;
+      const color = glow.color || '#ff35b8';
+      const intensity = typeof glow.intensity === 'number' ? glow.intensity : 0.75;
+      const radius = typeof glow.radius === 'number' ? glow.radius : 0.55;
+
+      const text = 'Cinematic Deep Glow Engine';
+      ctx.save();
+      ctx.font = '600 22px Outfit, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+
+      if (isEnabled) {
+        const blurPasses = [
+          { r: 8 * radius, a: 0.9 * intensity },
+          { r: 24 * radius, a: 0.5 * intensity },
+          { r: 48 * radius, a: 0.25 * intensity }
+        ];
+
+        blurPasses.forEach(pass => {
+          ctx.save();
+          ctx.shadowColor = color;
+          ctx.shadowBlur = Math.round(pass.r);
+          ctx.fillStyle = color;
+          ctx.globalAlpha = Math.min(1.0, pass.a);
+          ctx.fillText(text, w / 2, h / 2);
+          ctx.restore();
+        });
+      }
+
+      ctx.fillStyle = '#ffffff';
+      ctx.globalAlpha = 1.0;
+      ctx.fillText(text, w / 2, h / 2);
+      ctx.restore();
+    }
+
+    function bindGlowStudioEvents() {
+      document.getElementById('chk-glow-enabled')?.addEventListener('change', (e) => {
+        config.glow = config.glow || {};
+        config.glow.enabled = e.target.checked;
+        saveSettings();
+        renderGlowPreview();
+      });
+
+      document.getElementById('slider-glow-intensity')?.addEventListener('input', (e) => {
+        const val = parseFloat(e.target.value) / 100;
+        config.glow = config.glow || {};
+        config.glow.intensity = val;
+        config.glowIntensity = val;
+        document.getElementById('glow-intensity-val').textContent = val.toFixed(2);
+        saveSettings();
+        renderGlowPreview();
+      });
+
+      document.getElementById('slider-glow-radius')?.addEventListener('input', (e) => {
+        const val = parseFloat(e.target.value) / 100;
+        config.glow = config.glow || {};
+        config.glow.radius = val;
+        document.getElementById('glow-radius-val').textContent = val.toFixed(2);
+        saveSettings();
+        renderGlowPreview();
+      });
+
+      document.getElementById('slider-glow-threshold')?.addEventListener('input', (e) => {
+        const val = parseFloat(e.target.value) / 100;
+        config.glow = config.glow || {};
+        config.glow.threshold = val;
+        document.getElementById('glow-threshold-val').textContent = val.toFixed(2);
+        saveSettings();
+        renderGlowPreview();
+      });
+
+      document.getElementById('slider-glow-exposure')?.addEventListener('input', (e) => {
+        const val = parseFloat(e.target.value) / 100;
+        config.glow = config.glow || {};
+        config.glow.exposure = val;
+        document.getElementById('glow-exposure-val').textContent = val.toFixed(2);
+        saveSettings();
+        renderGlowPreview();
+      });
+
+      document.getElementById('slider-glow-saturation')?.addEventListener('input', (e) => {
+        const val = parseFloat(e.target.value) / 100;
+        config.glow = config.glow || {};
+        config.glow.saturation = val;
+        document.getElementById('glow-saturation-val').textContent = val.toFixed(2);
+        saveSettings();
+        renderGlowPreview();
+      });
+
+      document.getElementById('slider-glow-opacity')?.addEventListener('input', (e) => {
+        const val = parseFloat(e.target.value) / 100;
+        config.glow = config.glow || {};
+        config.glow.opacity = val;
+        document.getElementById('glow-opacity-val').textContent = `${Math.round(val * 100)}%`;
+        saveSettings();
+        renderGlowPreview();
+      });
+
+      document.getElementById('picker-glow-color')?.addEventListener('input', (e) => {
+        config.glow = config.glow || {};
+        config.glow.color = e.target.value;
+        saveSettings();
+        renderGlowPreview();
+      });
+
+      document.getElementById('select-glow-blend')?.addEventListener('change', (e) => {
+        config.glow = config.glow || {};
+        config.glow.blendMode = e.target.value;
+        saveSettings();
+        renderGlowPreview();
+      });
+
+      document.getElementById('select-glow-quality')?.addEventListener('change', (e) => {
+        config.glow = config.glow || {};
+        config.glow.quality = e.target.value;
+        saveSettings();
+        renderGlowPreview();
+      });
+
+      document.getElementById('select-custom-glow-preset')?.addEventListener('change', (e) => {
+        const id = e.target.value;
+        if (!id) return;
+        const found = customGlowPresets.find(p => p.id === id);
+        if (found) applyGlowPreset(found);
+      });
+
+      document.getElementById('btn-save-custom-glow')?.addEventListener('click', async () => {
+        const name = prompt('Enter a name for this custom glow preset:', 'Neon Custom');
+        if (!name || !name.trim()) return;
+        const glow = config.glow || {};
+        const saved = await api.saveCustomGlowPreset({
+          ...glow,
+          name: name.trim()
+        });
+        if (saved) {
+          await refreshCustomGlowPresetsList();
+          document.getElementById('select-custom-glow-preset').value = saved.id;
+          alert(`Saved custom preset "${name.trim()}"!`);
+        }
+      });
+
+      document.getElementById('btn-dup-custom-glow')?.addEventListener('click', async () => {
+        const sel = document.getElementById('select-custom-glow-preset');
+        const id = sel ? sel.value : null;
+        if (!id) {
+          alert('Please select a saved custom preset first.');
+          return;
+        }
+        const name = prompt('Name for the duplicate preset:');
+        if (!name || !name.trim()) return;
+        const dup = await api.duplicateCustomGlowPreset(id, name.trim());
+        if (dup) {
+          await refreshCustomGlowPresetsList();
+          document.getElementById('select-custom-glow-preset').value = dup.id;
+        }
+      });
+
+      document.getElementById('btn-rename-custom-glow')?.addEventListener('click', async () => {
+        const sel = document.getElementById('select-custom-glow-preset');
+        const id = sel ? sel.value : null;
+        if (!id) {
+          alert('Please select a saved custom preset first.');
+          return;
+        }
+        const name = prompt('New name for this preset:');
+        if (!name || !name.trim()) return;
+        const ok = await api.renameCustomGlowPreset(id, name.trim());
+        if (ok) {
+          await refreshCustomGlowPresetsList();
+          document.getElementById('select-custom-glow-preset').value = id;
+        }
+      });
+
+      document.getElementById('btn-del-custom-glow')?.addEventListener('click', async () => {
+        const sel = document.getElementById('select-custom-glow-preset');
+        const id = sel ? sel.value : null;
+        if (!id) {
+          alert('Please select a saved custom preset first.');
+          return;
+        }
+        if (confirm('Delete this custom preset?')) {
+          await api.deleteCustomGlowPreset(id);
+          await refreshCustomGlowPresetsList();
+        }
+      });
     }
 
     loadSettings();

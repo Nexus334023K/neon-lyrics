@@ -34,8 +34,10 @@ const paths = {
   configFile: path.join(userDataDir, 'config.json'),
   favoritesFile: path.join(userDataDir, 'favorites.json'),
   historyFile: path.join(userDataDir, 'history.json'),
+  glowPresetsFile: path.join(userDataDir, 'glow_presets.json'),
+  fontsDir: path.join(userDataDir, 'fonts'),
   ensureDirectories() {
-    [userDataDir, this.lyricsCache, this.artworkCache, this.logs].forEach((dir) => {
+    [userDataDir, this.lyricsCache, this.artworkCache, this.logs, this.fontsDir].forEach((dir) => {
       try {
         if (!fs.existsSync(dir)) {
           fs.mkdirSync(dir, { recursive: true });

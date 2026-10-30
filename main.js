@@ -10,6 +10,9 @@ const { storage } = require('./src/utils/storage');
 const { parseLrc, serializeLrc } = require('./src/utils/lrcParser');
 const { metadataService } = require('./src/utils/metadataService');
 const { analyzeLyricsLocally, analyzeLyricsWithAI } = require('./src/utils/lyricAnalysis');
+const { FontManager } = require('./src/utils/fontManager');
+
+const fontManager = new FontManager(storage, paths.fontsDir);
 
 // Ensure single instance
 const gotTheLock = app.requestSingleInstanceLock();
@@ -120,6 +123,31 @@ function createOverlayWindow() {
   overlayWindow.on('moved', saveBounds);
   overlayWindow.on('resized', saveBounds);
 
+  // Overlay visibility events to pause/resume animation loop
+  overlayWindow.on('hide', () => {
+    if (overlayWindow && !overlayWindow.isDestroyed()) {
+      overlayWindow.webContents.send('overlay-visibility', false);
+    }
+  });
+
+  overlayWindow.on('show', () => {
+    if (overlayWindow && !overlayWindow.isDestroyed()) {
+      overlayWindow.webContents.send('overlay-visibility', true);
+    }
+  });
+
+  overlayWindow.on('minimize', () => {
+    if (overlayWindow && !overlayWindow.isDestroyed()) {
+      overlayWindow.webContents.send('overlay-visibility', false);
+    }
+  });
+
+  overlayWindow.on('restore', () => {
+    if (overlayWindow && !overlayWindow.isDestroyed()) {
+      overlayWindow.webContents.send('overlay-visibility', true);
+    }
+  });
+
   overlayWindow.loadFile(path.join(__dirname, 'index.html'));
 
   overlayWindow.on('closed', () => {
@@ -222,6 +250,28 @@ function updateTrayMenu() {
       click: () => openSettingsWindow()
     },
     {
+      label: '🔮 Visualization Engine',
+      submenu: [
+        { label: 'Ship (Perspective 3D Wall)', type: 'radio', checked: (config.visualizationMode || 'ship') === 'ship', click: () => applyVisualizationMode('ship') },
+        { label: 'Fisheye (Convex Lens)', type: 'radio', checked: config.visualizationMode === 'fisheye', click: () => applyVisualizationMode('fisheye') },
+        { label: 'Fisheye Visual (Convex + Glyphs)', type: 'radio', checked: config.visualizationMode === 'fisheye-visual', click: () => applyVisualizationMode('fisheye-visual') },
+        { label: 'Clean (Minimalist Elegance)', type: 'radio', checked: config.visualizationMode === 'clean', click: () => applyVisualizationMode('clean') }
+      ]
+    },
+    {
+      label: '🖼️ Transparent Wallpaper Mode',
+      type: 'checkbox',
+      checked: Boolean(config.wallpaperMode?.enabled),
+      click: (item) => {
+        const wp = { ...(config.wallpaperMode || {}), enabled: item.checked };
+        storage.saveConfig({ wallpaperMode: wp });
+        if (overlayWindow && !overlayWindow.isDestroyed()) {
+          overlayWindow.webContents.send('apply-config', storage.getConfig());
+        }
+        updateTrayMenu();
+      }
+    },
+    {
       label: '🎨 Quick Theme Presets',
       submenu: [
         { label: 'Cyber Aqua', click: () => applyThemePreset('theme-cyber') },
@@ -295,6 +345,18 @@ function applyThemePreset(themeName) {
       theme: themeName
     });
   }
+}
+
+function applyVisualizationMode(mode) {
+  storage.saveConfig({ visualizationMode: mode });
+  const fullConfig = storage.getConfig();
+  if (overlayWindow && !overlayWindow.isDestroyed()) {
+    overlayWindow.webContents.send('apply-config', fullConfig);
+  }
+  if (settingsWindow && !settingsWindow.isDestroyed()) {
+    settingsWindow.webContents.send('apply-config', fullConfig);
+  }
+  updateTrayMenu();
 }
 
 function getWorkerCommand() {
@@ -441,11 +503,24 @@ ipcMain.handle('get-initial-state', () => {
   };
 });
 
+ipcMain.handle('get-display-refresh-rate', () => {
+  try {
+    const primary = screen.getPrimaryDisplay();
+    return primary?.displayFrequency || null;
+  } catch (e) {
+    return null;
+  }
+});
+
 ipcMain.on('config-updated', (event, newConfig) => {
   if (!newConfig || typeof newConfig !== 'object') return;
   storage.saveConfig(newConfig);
+  const fullConfig = storage.getConfig();
   if (overlayWindow && !overlayWindow.isDestroyed()) {
-    overlayWindow.webContents.send('apply-config', newConfig);
+    overlayWindow.webContents.send('apply-config', fullConfig);
+  }
+  if (settingsWindow && !settingsWindow.isDestroyed() && event?.sender !== settingsWindow.webContents) {
+    settingsWindow.webContents.send('apply-config', fullConfig);
   }
 });
 
@@ -526,6 +601,56 @@ ipcMain.handle('remove-favorite', (event, trackId) => {
 ipcMain.handle('get-history', () => storage.getHistory());
 
 ipcMain.handle('clear-history', () => storage.clearHistory());
+
+// Glow Preset Handlers
+ipcMain.handle('get-custom-glow-presets', () => storage.getCustomGlowPresets());
+
+ipcMain.handle('save-custom-glow-preset', (event, preset) => storage.saveCustomGlowPreset(preset));
+
+ipcMain.handle('delete-custom-glow-preset', (event, id) => storage.deleteCustomGlowPreset(id));
+
+ipcMain.handle('rename-custom-glow-preset', (event, { id, newName }) => storage.renameCustomGlowPreset(id, newName));
+
+ipcMain.handle('duplicate-custom-glow-preset', (event, { id, newName }) => storage.duplicateCustomGlowPreset(id, newName));
+
+// Custom Fonts Handlers
+ipcMain.handle('get-custom-fonts', () => fontManager.getCustomFonts());
+
+ipcMain.handle('delete-custom-font', (event, fontId) => {
+  const ok = fontManager.deleteFont(fontId);
+  if (ok && overlayWindow && !overlayWindow.isDestroyed()) {
+    overlayWindow.webContents.send('apply-config', storage.getConfig());
+  }
+  return ok;
+});
+
+ipcMain.handle('get-font-face-css', () => {
+  const fonts = fontManager.getCustomFonts();
+  return fonts.map(f => fontManager.generateFontFaceCSS(f)).join('\n');
+});
+
+ipcMain.handle('import-font-dialog', async () => {
+  const result = await dialog.showOpenDialog({
+    title: 'Import Custom Font',
+    filters: [
+      { name: 'Fonts (TTF, OTF, WOFF, WOFF2)', extensions: ['ttf', 'otf', 'woff', 'woff2'] }
+    ],
+    properties: ['openFile']
+  });
+
+  if (result.canceled || !result.filePaths.length) return null;
+
+  try {
+    const imported = fontManager.importFont(result.filePaths[0]);
+    if (overlayWindow && !overlayWindow.isDestroyed()) {
+      overlayWindow.webContents.send('apply-config', storage.getConfig());
+    }
+    return imported;
+  } catch (err) {
+    dialog.showErrorBox('Font Import Failed', err.message);
+    return null;
+  }
+});
 
 ipcMain.handle('search-lyrics', async (event, query) => {
   if (!query) return [];
@@ -630,8 +755,13 @@ app.whenReady().then(() => {
   try {
     globalShortcut.register('CommandOrControl+Alt+L', () => {
       if (overlayWindow && !overlayWindow.isDestroyed()) {
-        if (overlayWindow.isVisible()) overlayWindow.hide();
-        else overlayWindow.show();
+        if (overlayWindow.isVisible()) {
+          overlayWindow.hide();
+          overlayWindow.webContents.send('overlay-visibility', false);
+        } else {
+          overlayWindow.show();
+          overlayWindow.webContents.send('overlay-visibility', true);
+        }
       }
     });
 
