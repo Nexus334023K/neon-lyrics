@@ -137,6 +137,60 @@ const DEFAULT_CONFIG = {
   plugins: {
     enabled: []
   },
+  // Audio-Reactive Engine
+  audioReactive: {
+    enabled: false,
+    sensitivity: 1.0,
+    smoothing: 0.8,
+    bassIntensity: 1.0,
+    midIntensity: 0.8,
+    trebleIntensity: 0.6,
+    beatThreshold: 1.25,
+    reactionSpeed: 1.0,
+    source: 'system' // 'system' | 'mic' | 'simulated'
+  },
+  // Three.js 3D Engine
+  threeD: {
+    enabled: false,
+    depth: 800,
+    cameraFov: 60,
+    textExtrusion: 0.2,
+    floatingArtwork: true,
+    cameraMotion: 'orbit', // 'orbit' | 'tunnel' | 'static' | 'dynamic'
+    particleField: true,
+    audioReactivity: true
+  },
+  // AI Music Intelligence
+  aiIntelligence: {
+    enabled: false,
+    provider: 'local', // 'local' | 'custom'
+    localHeuristics: true,
+    autoMoodPresets: true,
+    sentimentAnalysis: true,
+    apiEndpoint: '',
+    apiKey: ''
+  },
+  // Lyrics Studio
+  lyricsStudio: {
+    syncOffset: 0.0,
+    showDualLanguage: false,
+    romanization: false,
+    karaokeHighlight: true,
+    fontSize: 1.0
+  },
+  // Desktop Widgets & Windowing
+  desktopWidgets: {
+    mode: 'overlay', // 'overlay' | 'widget' | 'dock'
+    snapToEdges: true,
+    edgeMargin: 16,
+    monitorIndex: 0,
+    gameModeAutoHide: false
+  },
+  // Personal Music Insights
+  insights: {
+    trackingEnabled: true,
+    retentionDays: 90
+  },
   spotify: {
     enabled: false,
     clientId: '',
@@ -317,6 +371,90 @@ function validateWallpaperConfig(raw = {}) {
   };
 }
 
+function validateAudioReactiveConfig(raw = {}) {
+  const defaults = DEFAULT_CONFIG.audioReactive;
+  if (!raw || typeof raw !== 'object') return { ...defaults };
+
+  return {
+    enabled: typeof raw.enabled === 'boolean' ? raw.enabled : defaults.enabled,
+    sensitivity: (typeof raw.sensitivity === 'number' && raw.sensitivity >= 0.1 && raw.sensitivity <= 3.0) ? raw.sensitivity : defaults.sensitivity,
+    smoothing: (typeof raw.smoothing === 'number' && raw.smoothing >= 0.0 && raw.smoothing <= 0.99) ? raw.smoothing : defaults.smoothing,
+    bassIntensity: (typeof raw.bassIntensity === 'number' && raw.bassIntensity >= 0.0 && raw.bassIntensity <= 3.0) ? raw.bassIntensity : defaults.bassIntensity,
+    midIntensity: (typeof raw.midIntensity === 'number' && raw.midIntensity >= 0.0 && raw.midIntensity <= 3.0) ? raw.midIntensity : defaults.midIntensity,
+    trebleIntensity: (typeof raw.trebleIntensity === 'number' && raw.trebleIntensity >= 0.0 && raw.trebleIntensity <= 3.0) ? raw.trebleIntensity : defaults.trebleIntensity,
+    beatThreshold: (typeof raw.beatThreshold === 'number' && raw.beatThreshold >= 1.0 && raw.beatThreshold <= 3.0) ? raw.beatThreshold : defaults.beatThreshold,
+    reactionSpeed: (typeof raw.reactionSpeed === 'number' && raw.reactionSpeed >= 0.1 && raw.reactionSpeed <= 3.0) ? raw.reactionSpeed : defaults.reactionSpeed,
+    source: ['system', 'mic', 'simulated'].includes(raw.source) ? raw.source : defaults.source
+  };
+}
+
+function validateThreeDConfig(raw = {}) {
+  const defaults = DEFAULT_CONFIG.threeD;
+  if (!raw || typeof raw !== 'object') return { ...defaults };
+
+  return {
+    enabled: typeof raw.enabled === 'boolean' ? raw.enabled : defaults.enabled,
+    depth: (typeof raw.depth === 'number' && raw.depth >= 200 && raw.depth <= 2500) ? raw.depth : defaults.depth,
+    cameraFov: (typeof raw.cameraFov === 'number' && raw.cameraFov >= 30 && raw.cameraFov <= 120) ? raw.cameraFov : defaults.cameraFov,
+    textExtrusion: (typeof raw.textExtrusion === 'number' && raw.textExtrusion >= 0.0 && raw.textExtrusion <= 2.0) ? raw.textExtrusion : defaults.textExtrusion,
+    floatingArtwork: typeof raw.floatingArtwork === 'boolean' ? raw.floatingArtwork : defaults.floatingArtwork,
+    cameraMotion: ['orbit', 'tunnel', 'static', 'dynamic'].includes(raw.cameraMotion) ? raw.cameraMotion : defaults.cameraMotion,
+    particleField: typeof raw.particleField === 'boolean' ? raw.particleField : defaults.particleField,
+    audioReactivity: typeof raw.audioReactivity === 'boolean' ? raw.audioReactivity : defaults.audioReactivity
+  };
+}
+
+function validateAiIntelligenceConfig(raw = {}) {
+  const defaults = DEFAULT_CONFIG.aiIntelligence;
+  if (!raw || typeof raw !== 'object') return { ...defaults };
+
+  return {
+    enabled: typeof raw.enabled === 'boolean' ? raw.enabled : defaults.enabled,
+    provider: ['local', 'custom'].includes(raw.provider) ? raw.provider : defaults.provider,
+    localHeuristics: typeof raw.localHeuristics === 'boolean' ? raw.localHeuristics : defaults.localHeuristics,
+    autoMoodPresets: typeof raw.autoMoodPresets === 'boolean' ? raw.autoMoodPresets : defaults.autoMoodPresets,
+    sentimentAnalysis: typeof raw.sentimentAnalysis === 'boolean' ? raw.sentimentAnalysis : defaults.sentimentAnalysis,
+    apiEndpoint: typeof raw.apiEndpoint === 'string' ? raw.apiEndpoint.trim() : defaults.apiEndpoint,
+    apiKey: typeof raw.apiKey === 'string' ? raw.apiKey.trim() : defaults.apiKey
+  };
+}
+
+function validateLyricsStudioConfig(raw = {}) {
+  const defaults = DEFAULT_CONFIG.lyricsStudio;
+  if (!raw || typeof raw !== 'object') return { ...defaults };
+
+  return {
+    syncOffset: typeof raw.syncOffset === 'number' ? raw.syncOffset : defaults.syncOffset,
+    showDualLanguage: typeof raw.showDualLanguage === 'boolean' ? raw.showDualLanguage : defaults.showDualLanguage,
+    romanization: typeof raw.romanization === 'boolean' ? raw.romanization : defaults.romanization,
+    karaokeHighlight: typeof raw.karaokeHighlight === 'boolean' ? raw.karaokeHighlight : defaults.karaokeHighlight,
+    fontSize: (typeof raw.fontSize === 'number' && raw.fontSize >= 0.5 && raw.fontSize <= 2.5) ? raw.fontSize : defaults.fontSize
+  };
+}
+
+function validateDesktopWidgetsConfig(raw = {}) {
+  const defaults = DEFAULT_CONFIG.desktopWidgets;
+  if (!raw || typeof raw !== 'object') return { ...defaults };
+
+  return {
+    mode: ['overlay', 'widget', 'dock'].includes(raw.mode) ? raw.mode : defaults.mode,
+    snapToEdges: typeof raw.snapToEdges === 'boolean' ? raw.snapToEdges : defaults.snapToEdges,
+    edgeMargin: (typeof raw.edgeMargin === 'number' && raw.edgeMargin >= 0 && raw.edgeMargin <= 100) ? raw.edgeMargin : defaults.edgeMargin,
+    monitorIndex: (typeof raw.monitorIndex === 'number' && raw.monitorIndex >= 0) ? raw.monitorIndex : defaults.monitorIndex,
+    gameModeAutoHide: typeof raw.gameModeAutoHide === 'boolean' ? raw.gameModeAutoHide : defaults.gameModeAutoHide
+  };
+}
+
+function validateInsightsConfig(raw = {}) {
+  const defaults = DEFAULT_CONFIG.insights;
+  if (!raw || typeof raw !== 'object') return { ...defaults };
+
+  return {
+    trackingEnabled: typeof raw.trackingEnabled === 'boolean' ? raw.trackingEnabled : defaults.trackingEnabled,
+    retentionDays: (typeof raw.retentionDays === 'number' && raw.retentionDays >= 7 && raw.retentionDays <= 365) ? raw.retentionDays : defaults.retentionDays
+  };
+}
+
 class StorageManager {
   constructor(options = {}) {
     this.paths = options.paths || paths;
@@ -455,6 +593,14 @@ class StorageManager {
     merged.customFonts = Array.isArray(data.customFonts) ? data.customFonts : [];
     merged.plugins = data.plugins && Array.isArray(data.plugins.enabled) ? data.plugins : { enabled: [] };
 
+    // Extension Engines
+    merged.audioReactive = validateAudioReactiveConfig(data.audioReactive);
+    merged.threeD = validateThreeDConfig(data.threeD);
+    merged.aiIntelligence = validateAiIntelligenceConfig(data.aiIntelligence || data.ai);
+    merged.lyricsStudio = validateLyricsStudioConfig(data.lyricsStudio);
+    merged.desktopWidgets = validateDesktopWidgetsConfig(data.desktopWidgets);
+    merged.insights = validateInsightsConfig(data.insights);
+
     return merged;
   }
 
@@ -517,6 +663,30 @@ class StorageManager {
       ? validateWallpaperConfig({ ...current.wallpaperMode, ...partialConfig.wallpaperMode })
       : current.wallpaperMode;
 
+    const newAudioReactive = partialConfig.audioReactive
+      ? validateAudioReactiveConfig({ ...current.audioReactive, ...partialConfig.audioReactive })
+      : current.audioReactive;
+
+    const newThreeD = partialConfig.threeD
+      ? validateThreeDConfig({ ...current.threeD, ...partialConfig.threeD })
+      : current.threeD;
+
+    const newAiIntelligence = partialConfig.aiIntelligence
+      ? validateAiIntelligenceConfig({ ...current.aiIntelligence, ...partialConfig.aiIntelligence })
+      : current.aiIntelligence;
+
+    const newLyricsStudio = partialConfig.lyricsStudio
+      ? validateLyricsStudioConfig({ ...current.lyricsStudio, ...partialConfig.lyricsStudio })
+      : current.lyricsStudio;
+
+    const newDesktopWidgets = partialConfig.desktopWidgets
+      ? validateDesktopWidgetsConfig({ ...current.desktopWidgets, ...partialConfig.desktopWidgets })
+      : current.desktopWidgets;
+
+    const newInsights = partialConfig.insights
+      ? validateInsightsConfig({ ...current.insights, ...partialConfig.insights })
+      : current.insights;
+
     const newVisualMode = partialConfig.visualMode || partialConfig.visualizationMode || current.visualMode;
 
     const updated = {
@@ -533,6 +703,12 @@ class StorageManager {
       fontScale: newTypography.fontScale,
       textAlign: newTypography.textAlign,
       wallpaperMode: newWallpaperMode,
+      audioReactive: newAudioReactive,
+      threeD: newThreeD,
+      aiIntelligence: newAiIntelligence,
+      lyricsStudio: newLyricsStudio,
+      desktopWidgets: newDesktopWidgets,
+      insights: newInsights,
       animation: newAnimation,
       schemaVersion: CURRENT_SCHEMA_VERSION,
       version: 3,
@@ -701,6 +877,12 @@ module.exports = {
   validateLineTransitionConfig,
   validateTypographyConfig,
   validateWallpaperConfig,
+  validateAudioReactiveConfig,
+  validateThreeDConfig,
+  validateAiIntelligenceConfig,
+  validateLyricsStudioConfig,
+  validateDesktopWidgetsConfig,
+  validateInsightsConfig,
   VALID_VISUALIZATION_MODES,
   VALID_BLUR_INTENSITIES,
   VALID_TARGET_FPS,

@@ -27,6 +27,9 @@ let lastPlaybackState = null;
 let currentFavorites = [];
 let currentAlbumPalette = null;
 let currentArtworkUrl = '';
+let lastListeningTimestamp = 0;
+let lastRecordedTrackKey = '';
+let trackCompletedRecorded = false;
 
 let config = {
   theme: 'theme-cyber',
@@ -141,6 +144,65 @@ const LineControllerClass = window.LineTransitionController || class {
   destroy() {}
 };
 const lineTransitionController = new LineControllerClass(config.lineTransitions);
+
+// Audio Reactive Dispatcher & 3D Scene Manager
+const AudioDispatcherClass = window.AudioReactiveDispatcher || class {
+  constructor() {}
+  applyConfig() {}
+  tick() {}
+};
+const audioDispatcher = new AudioDispatcherClass(config.audioReactive || {});
+
+const Scene3DClass = window.Scene3DManager || class {
+  constructor() {}
+  attach() {}
+  applyConfig() {}
+  resize() {}
+  tick() {}
+};
+const scene3DManager = new Scene3DClass(config.threeD || {});
+const scene3DCanvas = document.getElementById('scene-3d-canvas');
+if (scene3DCanvas) {
+  scene3DManager.attach(scene3DCanvas);
+}
+
+let lastAudioMetrics = null;
+if (scheduler && typeof scheduler.register === 'function') {
+  scheduler.register('audio-3d-pipeline', (dt) => {
+    lastAudioMetrics = audioDispatcher.tick(dt);
+    if (scene3DManager && scene3DManager.enabled) {
+      scene3DManager.tick(dt, lastAudioMetrics);
+    }
+  });
+}
+
+// AI Intelligence Service
+const AIServiceClass = window.AIIntelligenceService || class {
+  constructor() {}
+  applyConfig() {}
+  async analyzeTrack() { return null; }
+};
+const aiIntelligenceService = new AIServiceClass(config.aiIntelligence || {});
+let lastAnalyzedTrackId = '';
+
+// Lyrics Studio Manager
+const LyricsStudioClass = window.LyricsStudioManager || class {
+  constructor() {}
+  applyConfig() {}
+  formatDisplayLine(t) { return { primary: t, secondary: null }; }
+};
+const lyricsStudio = new LyricsStudioClass({
+  ...(config.lyricsStudio || {}),
+  syncOffset: config.syncOffset || 0.0
+});
+
+// Desktop Window & Widget Manager
+const DesktopManagerClass = window.DesktopWindowManager || class {
+  constructor() {}
+  applyConfig() {}
+  computeTargetBounds() { return null; }
+};
+const desktopManager = new DesktopManagerClass(config.desktopWidgets || {});
 
 const pastLineEl = document.getElementById('past-line');
 const activeLineEl = document.getElementById('active-line');
@@ -267,6 +329,33 @@ function applyConfig() {
     lineTransitionController.applyConfig(config.lineTransitions);
   }
 
+  if (config.audioReactive) {
+    audioDispatcher.applyConfig(config.audioReactive);
+  }
+
+  if (config.threeD) {
+    scene3DManager.applyConfig(config.threeD);
+  }
+
+  if (config.aiIntelligence) {
+    aiIntelligenceService.applyConfig(config.aiIntelligence);
+  }
+
+  if (config.lyricsStudio || config.syncOffset !== undefined) {
+    lyricsStudio.applyConfig({
+      ...(config.lyricsStudio || {}),
+      syncOffset: config.syncOffset || 0.0
+    });
+  }
+
+  if (config.desktopWidgets) {
+    desktopManager.applyConfig(config.desktopWidgets);
+    if (config.desktopWidgets.mode) {
+      document.body.classList.toggle('mode-widget-card', config.desktopWidgets.mode === 'widget');
+      document.body.classList.toggle('mode-dock-pill', config.desktopWidgets.mode === 'dock');
+    }
+  }
+
   // Wallpaper Mode desktop integration
   const WallpaperModeClass = window.WallpaperMode || (typeof WallpaperMode !== 'undefined' ? WallpaperMode : null);
   if (WallpaperModeClass) {
@@ -344,6 +433,50 @@ function updatePlayback(data) {
 
   updateFavoriteButton(data);
 
+  // Background AI Mood & Intelligence Analysis
+  if (data.title && trackId !== lastAnalyzedTrackId && aiIntelligenceService.enabled) {
+    lastAnalyzedTrackId = trackId;
+    const lyricsCorpus = (data.lyrics || []).map(l => l.text).join(' ');
+    aiIntelligenceService.analyzeTrack(data, lyricsCorpus).catch(() => {});
+  }
+
+  // Music Insights listening time accumulation
+  if (data.state === 'playing' && data.title) {
+    const now = Date.now();
+    if (trackId !== lastRecordedTrackKey) {
+      lastRecordedTrackKey = trackId;
+      trackCompletedRecorded = false;
+      lastListeningTimestamp = now;
+    } else if (lastListeningTimestamp > 0) {
+      const elapsedSec = (now - lastListeningTimestamp) / 1000;
+      if (elapsedSec >= 0.1 && elapsedSec <= 5.0) {
+        if (config.insights && config.insights.enabled !== false && api.recordListeningSession) {
+          api.recordListeningSession({
+            track: { title: data.title, artist: data.artist || 'Unknown Artist' },
+            seconds: elapsedSec,
+            completed: false
+          });
+        }
+      }
+      lastListeningTimestamp = now;
+    } else {
+      lastListeningTimestamp = now;
+    }
+
+    if (!trackCompletedRecorded && data.duration > 30 && (data.position / data.duration) >= 0.85) {
+      trackCompletedRecorded = true;
+      if (config.insights && config.insights.enabled !== false && api.recordListeningSession) {
+        api.recordListeningSession({
+          track: { title: data.title, artist: data.artist || 'Unknown Artist' },
+          seconds: 0,
+          completed: true
+        });
+      }
+    }
+  } else {
+    lastListeningTimestamp = 0;
+  }
+
   // Play / Pause Icon
   if (data.state === 'playing') {
     iconPlay.style.display = 'none';
@@ -374,6 +507,16 @@ function updatePlayback(data) {
       currentLineIdx = -1;
       currentWordIdx = -1;
       lyrics = data.lyrics || [];
+
+      // Check per-song preset binding
+      if (api.getSongPresetBindings && api.applyUniversalPreset) {
+        api.getSongPresetBindings().then(bindings => {
+          const bound = bindings && bindings[trackId.toLowerCase()];
+          if (bound) {
+            api.applyUniversalPreset(bound);
+          }
+        }).catch(() => {});
+      }
 
       if (lyrics.length === 0) {
         pastLineEl.textContent = '';

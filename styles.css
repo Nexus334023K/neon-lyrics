@@ -14,6 +14,9 @@
   --backdrop-opacity: 0;
   --backdrop-blur: 16px;
   --perspective-depth: 800px;
+  --audio-bass-scale: 1.0;
+  --audio-beat-pulse: 0.0;
+  --audio-glow-boost: 1.0;
 }
 
 /* Preset Themes */
@@ -377,6 +380,15 @@ body.reduced-motion-active .word {
   word-spacing: var(--word-spacing, 0px);
 }
 
+.line-subtext {
+  display: block;
+  font-size: 0.62em;
+  opacity: 0.72;
+  font-weight: 400;
+  margin-top: 3px;
+  letter-spacing: 0.5px;
+}
+
 .next-line {
   font-family: var(--next-line-font, var(--font-family));
 }
@@ -398,12 +410,12 @@ body.reduced-motion-active .word {
 .word.active {
   font-family: var(--active-word-font, inherit);
   color: var(--word-active);
-  transform: scale(1.08);
+  transform: scale(calc(1.08 * var(--audio-bass-scale, 1.0)));
   text-shadow:
     0 0 10px rgba(255, 255, 255, 0.95),
-    0 0 calc(22px * var(--glow-intensity)) var(--glow-primary),
-    0 0 calc(42px * var(--glow-intensity)) var(--glow-primary),
-    0 0 calc(70px * var(--glow-intensity)) var(--glow-secondary),
+    0 0 calc(22px * var(--glow-intensity) * var(--audio-glow-boost, 1.0)) var(--glow-primary),
+    0 0 calc(42px * var(--glow-intensity) * var(--audio-glow-boost, 1.0)) var(--glow-primary),
+    0 0 calc(70px * var(--glow-intensity) * var(--audio-glow-boost, 1.0)) var(--glow-secondary),
     0 3px 16px rgba(0, 0, 0, 0.95);
   animation: karaoke-glow 0.8s ease-in-out infinite alternate;
 }

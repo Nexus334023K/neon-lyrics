@@ -203,6 +203,70 @@ contextBridge.exposeInMainWorld('neonLyricsApi', {
     return await ipcRenderer.invoke('get-font-face-css');
   },
 
+  getConnectedDisplays: async () => {
+    return await ipcRenderer.invoke('get-connected-displays');
+  },
+
+  setWindowModeBounds: async (targetBounds) => {
+    if (!targetBounds || typeof targetBounds !== 'object') return false;
+    return await ipcRenderer.invoke('set-window-mode-bounds', targetBounds);
+  },
+
+  getMusicInsights: async () => {
+    return await ipcRenderer.invoke('get-music-insights');
+  },
+
+  recordListeningSession: async (payload) => {
+    if (!payload || typeof payload !== 'object') return false;
+    return await ipcRenderer.invoke('record-listening-session', payload);
+  },
+
+  clearMusicInsights: async () => {
+    return await ipcRenderer.invoke('clear-music-insights');
+  },
+
+  exportMusicInsights: async () => {
+    return await ipcRenderer.invoke('export-music-insights');
+  },
+
+  // Universal Presets
+  getUniversalPresets: async () => {
+    return await ipcRenderer.invoke('get-universal-presets');
+  },
+
+  applyUniversalPreset: async (presetId) => {
+    if (typeof presetId !== 'string') return false;
+    return await ipcRenderer.invoke('apply-universal-preset', presetId);
+  },
+
+  saveUniversalPreset: async (preset) => {
+    if (!preset || typeof preset !== 'object') return false;
+    return await ipcRenderer.invoke('save-universal-preset', preset);
+  },
+
+  deleteUniversalPreset: async (presetId) => {
+    if (typeof presetId !== 'string') return false;
+    return await ipcRenderer.invoke('delete-universal-preset', presetId);
+  },
+
+  exportUniversalPreset: async (presetId) => {
+    if (typeof presetId !== 'string') return false;
+    return await ipcRenderer.invoke('export-universal-preset', presetId);
+  },
+
+  importUniversalPreset: async () => {
+    return await ipcRenderer.invoke('import-universal-preset');
+  },
+
+  setSongPresetBinding: async (trackKey, presetId) => {
+    if (!trackKey || typeof trackKey !== 'string') return false;
+    return await ipcRenderer.invoke('set-song-preset-binding', { trackKey, presetId });
+  },
+
+  getSongPresetBindings: async () => {
+    return await ipcRenderer.invoke('get-song-preset-bindings');
+  },
+
   openExternalUrl: (url) => {
     if (typeof url === 'string' && /^https?:\/\//i.test(url)) {
       ipcRenderer.send('open-external-url', url);

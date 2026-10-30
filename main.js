@@ -11,8 +11,14 @@ const { parseLrc, serializeLrc } = require('./src/utils/lrcParser');
 const { metadataService } = require('./src/utils/metadataService');
 const { analyzeLyricsLocally, analyzeLyricsWithAI } = require('./src/utils/lyricAnalysis');
 const { FontManager } = require('./src/utils/fontManager');
+const { InsightsStorage } = require('./src/insights/InsightsStorage');
+const { MetricsAggregator } = require('./src/insights/MetricsAggregator');
+const { UniversalPresetManager } = require('./src/presets/UniversalPresetManager');
 
 const fontManager = new FontManager(storage, paths.fontsDir);
+const insightsStorage = new InsightsStorage({ filePath: paths.insightsFile });
+const metricsAggregator = new MetricsAggregator(insightsStorage);
+const universalPresetManager = new UniversalPresetManager({ presetsDir: paths.presetsDir });
 
 // Ensure single instance
 const gotTheLock = app.requestSingleInstanceLock();
@@ -650,6 +656,138 @@ ipcMain.handle('import-font-dialog', async () => {
     dialog.showErrorBox('Font Import Failed', err.message);
     return null;
   }
+});
+
+// Desktop Displays and Window Mode Handlers
+ipcMain.handle('get-connected-displays', () => {
+  const primaryId = screen.getPrimaryDisplay().id;
+  return screen.getAllDisplays().map((d, idx) => ({
+    id: d.id,
+    index: idx,
+    bounds: d.bounds,
+    workArea: d.workArea,
+    isPrimary: d.id === primaryId
+  }));
+});
+
+ipcMain.handle('set-window-mode-bounds', (event, targetBounds) => {
+  if (overlayWindow && !overlayWindow.isDestroyed() && targetBounds) {
+    overlayWindow.setBounds({
+      x: Math.round(targetBounds.x),
+      y: Math.round(targetBounds.y),
+      width: Math.round(targetBounds.width),
+      height: Math.round(targetBounds.height)
+    });
+    return true;
+  }
+  return false;
+});
+
+// Music Insights & Analytics Handlers
+ipcMain.handle('get-music-insights', () => {
+  return {
+    recap: metricsAggregator.getPersonalRecap(),
+    topSongs: metricsAggregator.getTopSongs(10),
+    topArtists: metricsAggregator.getTopArtists(10),
+    dailyActivity: metricsAggregator.getDailyActivity(7),
+    milestones: metricsAggregator.checkMilestones()
+  };
+});
+
+ipcMain.handle('record-listening-session', (event, { track, seconds, completed }) => {
+  if (seconds > 0) {
+    insightsStorage.recordListening(track, seconds);
+  }
+  if (completed) {
+    insightsStorage.recordTrackCompletion(track);
+  }
+  return true;
+});
+
+ipcMain.handle('clear-music-insights', () => {
+  insightsStorage.clear();
+  return true;
+});
+
+ipcMain.handle('export-music-insights', () => {
+  return metricsAggregator.exportDataJson();
+});
+
+// Universal Preset Manager IPC
+ipcMain.handle('get-universal-presets', () => {
+  return universalPresetManager.getAllPresets();
+});
+
+ipcMain.handle('apply-universal-preset', (event, presetId) => {
+  const preset = universalPresetManager.getPresetById(presetId);
+  if (!preset) return false;
+  const currentConfig = storage.getConfig();
+  const updatedConfig = universalPresetManager.applyPresetToConfig(preset, currentConfig);
+  storage.saveConfig(updatedConfig);
+  if (overlayWindow && !overlayWindow.isDestroyed()) {
+    overlayWindow.webContents.send('apply-config', updatedConfig);
+  }
+  if (settingsWindow && !settingsWindow.isDestroyed()) {
+    settingsWindow.webContents.send('apply-config', updatedConfig);
+  }
+  return true;
+});
+
+ipcMain.handle('save-universal-preset', (event, preset) => {
+  try {
+    return universalPresetManager.saveCustomPreset(preset);
+  } catch (e) {
+    return { error: e.message };
+  }
+});
+
+ipcMain.handle('delete-universal-preset', (event, presetId) => {
+  return universalPresetManager.deleteCustomPreset(presetId);
+});
+
+ipcMain.handle('export-universal-preset', async (event, presetId) => {
+  const preset = universalPresetManager.getPresetById(presetId);
+  if (!preset) return false;
+  const jsonStr = universalPresetManager.exportPresetJson(presetId);
+  const result = await dialog.showSaveDialog({
+    title: 'Export NeonLyrics Preset',
+    defaultPath: `${preset.id}.neonpreset`,
+    filters: [{ name: 'NeonLyrics Preset', extensions: ['neonpreset', 'json'] }]
+  });
+  if (result.canceled || !result.filePath) return false;
+  try {
+    fs.writeFileSync(result.filePath, jsonStr, 'utf8');
+    return true;
+  } catch (err) {
+    return false;
+  }
+});
+
+ipcMain.handle('import-universal-preset', async () => {
+  const result = await dialog.showOpenDialog({
+    title: 'Import NeonLyrics Preset',
+    filters: [{ name: 'NeonLyrics Presets', extensions: ['neonpreset', 'json'] }],
+    properties: ['openFile']
+  });
+  if (result.canceled || !result.filePaths.length) return null;
+  try {
+    const raw = fs.readFileSync(result.filePaths[0], 'utf8');
+    return universalPresetManager.importPresetJson(raw);
+  } catch (err) {
+    return { error: err.message };
+  }
+});
+
+ipcMain.handle('set-song-preset-binding', (event, { trackKey, presetId }) => {
+  try {
+    return universalPresetManager.bindSong(trackKey, presetId);
+  } catch (e) {
+    return false;
+  }
+});
+
+ipcMain.handle('get-song-preset-bindings', () => {
+  return universalPresetManager.songBindings;
 });
 
 ipcMain.handle('search-lyrics', async (event, query) => {
